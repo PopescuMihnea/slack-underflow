@@ -14,4 +14,12 @@ VALUES (4);
 INSERT IGNORE
  INTO topic (topic_id)
 VALUES (5);
+--
+-- INSERT IGNORE
+--  INTO roles (role_id)
+-- VALUES ("ADMIN");
+--
+-- INSERT IGNORE
+--  INTO roles (role_id)
+-- VALUES ("USER");
 

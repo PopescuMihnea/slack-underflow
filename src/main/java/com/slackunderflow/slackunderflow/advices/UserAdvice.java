@@ -16,7 +16,7 @@ public class UserAdvice {
     @ExceptionHandler(UserNotFoundError.class)
     public ResponseEntity<?> userNotFound(UserNotFoundError error) {
         Map<String, String> map = new HashMap<>();
-        map.put("email", error.getEmail());
+        map.put("username", error.getUsername());
         map.put("password", error.getPassword());
         map.put("message", error.getMessage());
         return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);

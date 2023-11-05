@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -23,9 +23,9 @@ public class UserController {
     }
 
     @PutMapping("/login")
-    public ResponseEntity<UserResponseDto> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<UserResponseDto> login(@RequestBody UserDto userDto) {
         return new ResponseEntity<>(
-                userEntityService.login(userLoginDto),
+                userEntityService.login(userDto),
                 HttpStatus.OK
         );
     }

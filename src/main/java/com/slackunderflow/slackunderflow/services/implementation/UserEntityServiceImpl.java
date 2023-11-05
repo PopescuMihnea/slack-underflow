@@ -5,43 +5,67 @@ import com.slackunderflow.slackunderflow.dtos.UserLoginDto;
 import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.UserMapper;
+import com.slackunderflow.slackunderflow.models.Role;
 import com.slackunderflow.slackunderflow.models.UserEntity;
+import com.slackunderflow.slackunderflow.repositories.RoleRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
+import com.slackunderflow.slackunderflow.security.TokenService;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserEntityServiceImpl implements UserEntityService {
 
     private final UserEntityRepository userEntityRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     public UserResponseDto register(UserDto userDto) {
 
-        UserEntity savedUser = userEntityRepository.save(userMapper.fromDtoToEntity(userDto));
+        Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Role not found"));
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
 
-        return userMapper.fromEntityToResponseDto(savedUser);
+        userEntityRepository.save(userMapper.fromDtoToEntity(userDto, roles));
+
+        return authAndCreateToken(userDto);
     }
 
-    public UserResponseDto login(UserLoginDto userLoginDto) {
-        String email = userLoginDto.getEmail();
-        String password = userLoginDto.getPassword();
+    public UserResponseDto login(UserDto userDto) {
 
-        UserEntity savedUser = userEntityRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundError("User does not exists ", email, password));
-
-        if (!passwordEncoder.matches(password, savedUser.getPassword())) {
-            throw new UserNotFoundError("User does not exists ", email, password);
-        }
-
-
-        return userMapper.fromEntityToResponseDto(savedUser);
+        return authAndCreateToken(userDto);
 
     }
 
 
+    private UserResponseDto authAndCreateToken(UserDto userDto) {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+
+        String token = tokenService.generateJwt(auth);
+
+        var savedUser = userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User not found", username));
+        return userMapper.fromEntityToResponseDto(savedUser, token);
+    }
+
+   
 }

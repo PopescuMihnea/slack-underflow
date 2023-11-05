@@ -13,10 +13,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserResponseDto {
 
-    private String email;
+    private String username;
 
 
     private Integer points = 0;
 
     private BadgeEnum badge = BadgeEnum.SLAVE;
+
+    private String jwt;
 }

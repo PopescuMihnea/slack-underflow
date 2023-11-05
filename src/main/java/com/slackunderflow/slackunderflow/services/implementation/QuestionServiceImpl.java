@@ -14,10 +14,5 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
 
-    public Boolean createQuestion(QuestionDto questionDto) {
-        Question question = questionMapper.fromDtoToEntity(questionDto);
-        questionRepository.save(question);
 
-        return true;
-    }
 }

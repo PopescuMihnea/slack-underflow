@@ -9,8 +9,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString(callSuper = true)
-public class QuestionDto extends AuthDto {
+@ToString
+public class QuestionDto {
     private String body;
     private Set<TopicEnum> topics;
 }
