@@ -1,10 +1,7 @@
 package com.slackunderflow.slackunderflow.models;
 
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +20,6 @@ public class Topic {
     @Column(name = "topic_id")
     private TopicEnum topic;
 
-    @ManyToMany(mappedBy = "topics")
+    @ManyToMany(mappedBy = "topics", cascade = CascadeType.REMOVE)
     private Set<Question> questions;
 }

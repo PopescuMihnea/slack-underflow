@@ -1,18 +1,25 @@
 package com.slackunderflow.slackunderflow.mappers;
 
 import com.slackunderflow.slackunderflow.dtos.QuestionDto;
+import com.slackunderflow.slackunderflow.dtos.QuestionResponseDto;
+import com.slackunderflow.slackunderflow.enums.TopicEnum;
+import com.slackunderflow.slackunderflow.errors.TopicNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.Topic;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.TopicRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
+import com.slackunderflow.slackunderflow.services.TopicService;
+import com.slackunderflow.slackunderflow.services.implementation.TopicServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -21,5 +28,34 @@ public class QuestionMapper {
     private final UserEntityRepository userEntityRepository;
     private final TopicRepository topicRepository;
 
+    public QuestionResponseDto fromEntityToDto(Question question) {
+        Set<Topic> topics = question.getTopics();
+        Set<TopicEnum> topicEnums = topics.stream()
+                .map(Topic::getTopic)
+                .collect(Collectors.toSet());
+
+
+        return QuestionResponseDto.builder().
+                id(question.getId()).
+                topics(topicEnums).
+                body(question.getBody()).
+                timestamp(question.getTimestamp()).
+                user(question.getUser()).build();
+    }
+
+    public Question fromDtoToEntity(QuestionDto questionDto, UserEntity user) {
+        Set<TopicEnum> topicEnums = questionDto.getTopics();
+        Set<Topic> topics = topicEnums
+                .stream()
+                .map(topic -> topicRepository.findByTopic(topic).orElseThrow(() -> new TopicNotFoundError("Topic not found", topic)))
+                .collect(Collectors.toSet());
+
+
+        return Question.builder()
+                .body(questionDto.getBody())
+                .timestamp(LocalDate.now())
+                .topics(topics)
+                .user(user).build();
+    }
 
 }

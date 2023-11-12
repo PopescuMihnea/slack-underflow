@@ -19,9 +19,9 @@ import java.util.UUID;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "question_id")
-    private UUID id;
+    private Long id;
 
     @NonNull
     private String body;

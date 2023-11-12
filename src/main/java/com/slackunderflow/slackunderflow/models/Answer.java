@@ -17,15 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "answer_id")
-    private UUID id;
+    private Long id;
 
     @NonNull
     private String body;
 
     @Column(name = "rank_")
-    private Integer rank;
+    private Integer rank = 0;
 
     @Column(name = "timestamp_")
     private LocalDate timestamp = LocalDate.now();

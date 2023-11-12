@@ -11,6 +11,7 @@ import com.slackunderflow.slackunderflow.repositories.RoleRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.security.TokenService;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,6 +53,32 @@ public class UserEntityServiceImpl implements UserEntityService {
 
     }
 
+    @Override
+    public UserResponseDto modify(UserDto userDto) {
+        String username = userDto.getUsername();
+
+        var user = userEntityRepository.findByUsername(userDto.getUsername()).orElseThrow(() -> new UserNotFoundError("User not found", username));
+        user.setPassword(userDto.getPassword());
+        userEntityRepository.save(user);
+
+        return userMapper.fromEntityToResponseDto(user, "");
+    }
+
+    @Override
+    public UserResponseDto get(Long id) {
+        var user = userEntityRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundError("User not found with id: ", id.toString()));
+
+        return userMapper.fromEntityToResponseDto(user, "");
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(String username) {
+        userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User is not found", username));
+        return userEntityRepository.deleteByUsername(username) == 1;
+    }
+
 
     private UserResponseDto authAndCreateToken(UserDto userDto) {
         String username = userDto.getUsername();
@@ -67,5 +94,5 @@ public class UserEntityServiceImpl implements UserEntityService {
         return userMapper.fromEntityToResponseDto(savedUser, token);
     }
 
-   
+
 }

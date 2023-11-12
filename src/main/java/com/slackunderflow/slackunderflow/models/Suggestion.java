@@ -17,9 +17,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Suggestion {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "suggestion_id")
-    private UUID id;
+    private Long id;
 
     @NonNull
     private String body;
@@ -28,11 +28,11 @@ public class Suggestion {
     private LocalDate timestamp = LocalDate.now();
 
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
