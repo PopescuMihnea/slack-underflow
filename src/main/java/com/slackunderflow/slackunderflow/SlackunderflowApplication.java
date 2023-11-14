@@ -33,7 +33,7 @@ public class SlackunderflowApplication {
             roles.add(adminRole);
             UserEntity admin = UserEntity
                     .builder()
-                    .id(UUID.randomUUID())
+                    .id(0L)
                     .username("caca")
                     .password(passwordEncoder.encode("1234"))
                     .authorities(roles)

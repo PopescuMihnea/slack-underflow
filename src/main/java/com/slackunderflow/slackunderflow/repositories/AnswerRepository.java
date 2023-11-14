@@ -29,11 +29,11 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Modifying
     @Query("UPDATE Answer a " +
             "SET a.rank = CASE " +
-            "    WHEN a.rank > 0 AND a.rank <= 2 AND a.rank >= :insertingRank THEN a.rank + 1 " +
-            "    WHEN a.rank = 3 AND a.rank >= :insertingRank THEN 0 " +
+            "    WHEN a.rank BETWEEN 1 AND 2 THEN a.rank + 1 " +
+            "    WHEN a.rank = 3 THEN 0 " +
             "    ELSE a.rank " +
             "END " +
-            "WHERE a.question.id = :questionId")
+            "WHERE a.question.id = :questionId AND a.rank >= :insertingRank")
     void incrementRanks(@Param("insertingRank") int insertingRank, @Param("questionId") Long questionId);
 
     @Modifying
@@ -48,7 +48,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("SELECT COALESCE(MAX(a.rank), 0) FROM Answer a WHERE a.question.id =  ?1")
     Integer findMaxRankByQuestion(Long questionId);
 
-    @Modifying
+    /*@Modifying
     @Query("UPDATE Answer a SET a.rank = 0 WHERE a.question.id = ?1")
-    void setAllRanksZero(Long questionId);
+    void setAllRanksZero(Long questionId);*/
 }

@@ -3,6 +3,7 @@ package com.slackunderflow.slackunderflow.services.implementation;
 import com.slackunderflow.slackunderflow.dtos.UserDto;
 import com.slackunderflow.slackunderflow.dtos.UserLoginDto;
 import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.enums.BadgeEnum;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.UserMapper;
 import com.slackunderflow.slackunderflow.models.Role;
@@ -10,6 +11,7 @@ import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.RoleRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.security.TokenService;
+import com.slackunderflow.slackunderflow.services.QuestionService;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,8 @@ public class UserEntityServiceImpl implements UserEntityService {
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final QuestionService questionService;
+    private static final int MAX_POINTS = 75;
 
     public UserResponseDto register(UserDto userDto) {
 
@@ -75,7 +79,12 @@ public class UserEntityServiceImpl implements UserEntityService {
     @Override
     @Transactional
     public boolean delete(String username) {
-        userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User is not found", username));
+        var user = userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User is not found", username));
+
+        if (!questionService.deleteByUser(user)) {
+            return false;
+        }
+
         return userEntityRepository.deleteByUsername(username) == 1;
     }
 
@@ -92,6 +101,29 @@ public class UserEntityServiceImpl implements UserEntityService {
 
         var savedUser = userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User not found", username));
         return userMapper.fromEntityToResponseDto(savedUser, token);
+    }
+
+    public UserResponseDto updatePoints(String username, Integer points) {
+        var user = userEntityRepository
+                .findByUsername(username).orElseThrow(() -> new UserNotFoundError("User not found with username: ", username));
+
+        var newPoints = user.getPoints() + points;
+        user.setPoints(newPoints);
+
+        var badge = getBadgeFromPoints(newPoints);
+        user.setBadge(badge);
+
+        userEntityRepository.save(user);
+
+        return userMapper.fromEntityToResponseDto(user, "");
+    }
+
+    private BadgeEnum getBadgeFromPoints(Integer points) {
+        return switch (Math.min(points, MAX_POINTS) / 25) {
+            case 1, 2 -> BadgeEnum.INTERMEDIATE;
+            case 3 -> BadgeEnum.BOSS;
+            default -> BadgeEnum.SLAVE;
+        };
     }
 
 

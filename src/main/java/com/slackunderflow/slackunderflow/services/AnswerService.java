@@ -23,9 +23,11 @@ public interface AnswerService {
 
     AnswerResponseDto get(Long id);
 
-    AnswerResponseDto create(AnswerDto answerDto, Long questionId, String username);
+    AnswerResponseDto create(AnswerDto answerDto, String username);
 
     AnswerResponseDto modify(Long id, AnswerDto answerDto, String username);
 
     boolean delete(Long id, String username);
+
+    boolean deleteByQuestion(Question question);
 }

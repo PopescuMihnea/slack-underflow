@@ -11,6 +11,7 @@ import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.QuestionRepository;
 import com.slackunderflow.slackunderflow.repositories.TopicRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
+import com.slackunderflow.slackunderflow.services.AnswerService;
 import com.slackunderflow.slackunderflow.services.QuestionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionMapper questionMapper;
     private final UserEntityRepository userEntityRepository;
     private final TopicRepository topicRepository;
+    private final AnswerService answerService;
 
     @Override
     public List<QuestionResponseDto> getAll() {
@@ -117,6 +120,24 @@ public class QuestionServiceImpl implements QuestionService {
             throw new QuestionNotFoundError("Question not found with id: ", id.toString());
         }
 
+        if (!answerService.deleteByQuestion(question)) {
+            return false;
+        }
+
         return questionRepository.customDeleteById(id) == 1;
+    }
+
+    @Override
+    public boolean deleteByUser(UserEntity user) {
+        var questions = questionRepository.findByUser(user);
+
+        AtomicReference<Integer> numberDeleted = new AtomicReference<>(0);
+        questions.forEach(question -> {
+            if (answerService.deleteByQuestion(question)) {
+                numberDeleted.updateAndGet(v -> v + questionRepository.customDeleteById(question.getId()));
+            }
+        });
+
+        return numberDeleted.get() == questions.size();
     }
 }

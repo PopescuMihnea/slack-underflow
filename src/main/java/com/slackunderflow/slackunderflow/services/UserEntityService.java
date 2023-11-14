@@ -15,4 +15,6 @@ public interface UserEntityService {
     UserResponseDto get(Long id);
 
     boolean delete(String username);
+
+    UserResponseDto updatePoints(String username, Integer points);
 }

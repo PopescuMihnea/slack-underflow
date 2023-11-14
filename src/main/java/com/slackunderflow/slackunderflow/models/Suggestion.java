@@ -28,11 +28,11 @@ public class Suggestion {
     private LocalDate timestamp = LocalDate.now();
 
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

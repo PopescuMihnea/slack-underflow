@@ -43,11 +43,11 @@ public class AnswerController {
         return new ResponseEntity<>(answerService.getAllByUser(username), HttpStatus.OK);
     }
 
-    @PostMapping("/create/{questionId}")
-    public ResponseEntity<AnswerResponseDto> createAnswer(Authentication authentication, @PathVariable Long questionId, @RequestBody AnswerDto answerDto) {
+    @PostMapping("/create")
+    public ResponseEntity<AnswerResponseDto> createAnswer(Authentication authentication, @RequestBody AnswerDto answerDto) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(answerService.create(answerDto, questionId, name), HttpStatus.CREATED);
+        return new ResponseEntity<>(answerService.create(answerDto, name), HttpStatus.CREATED);
 
     }
 

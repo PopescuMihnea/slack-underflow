@@ -7,16 +7,22 @@ import com.slackunderflow.slackunderflow.errors.AnswerNotFoundError;
 import com.slackunderflow.slackunderflow.errors.QuestionNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.AnswerMapper;
+import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.AnswerRepository;
 import com.slackunderflow.slackunderflow.repositories.QuestionRepository;
+import com.slackunderflow.slackunderflow.repositories.SuggestionRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.services.AnswerService;
+import com.slackunderflow.slackunderflow.services.SuggestionService;
+import com.slackunderflow.slackunderflow.services.UserEntityService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +33,8 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerMapper answerMapper;
     private final UserEntityRepository userEntityRepository;
     private final QuestionRepository questionRepository;
+    private final SuggestionService suggestionService;
+    private final UserEntityService userEntityService;
     private static final int MAX_RANK = 3;
     private static final int MIN_RANK = 1;
 
@@ -40,7 +48,21 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<AnswerResponseDto> resetRanksByQuestion(Long questionId) {
-        answerRepository.setAllRanksZero(questionId);
+        var question = questionRepository
+                .findById(questionId)
+                .orElseThrow(() ->
+                        new QuestionNotFoundError("Question not found with id: ", questionId.toString()));
+
+        var answers = answerRepository.findByQuestion(question);
+
+        answers.forEach(answer -> {
+            var pointChange = -getPointsFromRank(answer.getRank());
+            var user = answer.getUser();
+
+            userEntityService.updatePoints(user.getUsername(), pointChange);
+            answer.setRank(0);
+            answerRepository.save(answer);
+        });
 
         return getAll();
     }
@@ -138,14 +160,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public AnswerResponseDto create(AnswerDto answerDto, Long questionId, String username) {
+    public AnswerResponseDto create(AnswerDto answerDto, String username) {
         UserEntity user = userEntityRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundError("User not found", username));
 
-        var question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundError("Question not found with id: ", questionId.toString()));
-
-        var answer = answerMapper.fromDtoToEntity(answerDto, question, user);
+        var answer = answerMapper.fromDtoToEntity(answerDto, user);
 
         answerRepository.save(answer);
 
@@ -169,6 +188,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id, String username) {
         var answer = answerRepository.findById(id)
                 .orElseThrow(() -> new AnswerNotFoundError("Answer not found with id: ", id.toString()));
@@ -178,6 +198,33 @@ public class AnswerServiceImpl implements AnswerService {
             throw new AnswerNotFoundError("Answer not found with id: ", id.toString());
         }
 
+        if (!suggestionService.deleteByAnswer(answer)) {
+            return false;
+        }
+
         return answerRepository.customDeleteById(id) == 1;
+    }
+
+    @Override
+    public boolean deleteByQuestion(Question question) {
+        var answers = answerRepository.findByQuestion(question);
+
+        AtomicReference<Integer> numberDeleted = new AtomicReference<>(0);
+        answers.forEach(answer -> {
+            if (suggestionService.deleteByAnswer(answer)) {
+                numberDeleted.updateAndGet(v -> v + answerRepository.customDeleteById(answer.getId()));
+            }
+        });
+
+        return numberDeleted.get() == answers.size();
+    }
+
+    private Integer getPointsFromRank(Integer rank) {
+        return switch (rank) {
+            case 1 -> 15;
+            case 2 -> 10;
+            case 3 -> 5;
+            default -> 0;
+        };
     }
 }
