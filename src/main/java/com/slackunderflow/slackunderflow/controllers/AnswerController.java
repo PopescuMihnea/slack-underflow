@@ -1,7 +1,7 @@
 package com.slackunderflow.slackunderflow.controllers;
 
-import com.slackunderflow.slackunderflow.dtos.AnswerDto;
-import com.slackunderflow.slackunderflow.dtos.AnswerResponseDto;
+import com.slackunderflow.slackunderflow.dtos.requests.AnswerRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.AnswerResponseDto;
 import com.slackunderflow.slackunderflow.services.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,10 +44,10 @@ public class AnswerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AnswerResponseDto> createAnswer(Authentication authentication, @RequestBody AnswerDto answerDto) {
+    public ResponseEntity<AnswerResponseDto> createAnswer(Authentication authentication, @RequestBody AnswerRequestDto answerRequestDto) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(answerService.create(answerDto, name), HttpStatus.CREATED);
+        return new ResponseEntity<>(answerService.create(answerRequestDto, name), HttpStatus.CREATED);
 
     }
 
@@ -57,10 +57,10 @@ public class AnswerController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<AnswerResponseDto> modifyAnswer(Authentication authentication, @RequestBody AnswerDto answerDto, @PathVariable long id) {
+    public ResponseEntity<AnswerResponseDto> modifyAnswer(Authentication authentication, @RequestBody AnswerRequestDto answerRequestDto, @PathVariable long id) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(answerService.modify(id, answerDto, name), HttpStatus.OK);
+        return new ResponseEntity<>(answerService.modify(id, answerRequestDto, name), HttpStatus.OK);
     }
 
     @PatchMapping("/modify/{id}")

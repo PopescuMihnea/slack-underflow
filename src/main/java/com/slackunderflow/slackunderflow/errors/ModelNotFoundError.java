@@ -3,7 +3,7 @@ package com.slackunderflow.slackunderflow.errors;
 import lombok.Getter;
 
 @Getter
-public abstract class ModelNotFoundError extends RuntimeException {
+public class ModelNotFoundError extends RuntimeException {
     private final String body;
 
     public ModelNotFoundError(String message, String body) {

@@ -1,29 +1,21 @@
 package com.slackunderflow.slackunderflow.services;
 
-import com.slackunderflow.slackunderflow.dtos.AnswerDto;
-import com.slackunderflow.slackunderflow.dtos.AnswerResponseDto;
-import com.slackunderflow.slackunderflow.dtos.SuggestionDto;
-import com.slackunderflow.slackunderflow.dtos.SuggestionResponseDto;
+import com.slackunderflow.slackunderflow.dtos.requests.SuggestionRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.SuggestionResponseDto;
+import com.slackunderflow.slackunderflow.mappers.SuggestionMapper;
 import com.slackunderflow.slackunderflow.models.Answer;
+import com.slackunderflow.slackunderflow.models.Suggestion;
+import com.slackunderflow.slackunderflow.repositories.SuggestionRepository;
 
 import java.util.List;
 
-public interface SuggestionService {
-    List<SuggestionResponseDto> getAll();
+public interface SuggestionService
+        extends BodyEntityService<Suggestion, SuggestionResponseDto, SuggestionRequestDto,
+        SuggestionRepository, SuggestionMapper> {
 
-    List<SuggestionResponseDto> getAllByUser(String username);
-
-    List<SuggestionResponseDto> getAllByUser(Long id);
 
     List<SuggestionResponseDto> getAllByAnswer(Long id);
 
-    SuggestionResponseDto get(Long id);
-
-    SuggestionResponseDto create(SuggestionDto suggestionDto, String username);
-
-    SuggestionResponseDto modify(Long id, SuggestionDto suggestionDto, String username);
-
-    boolean delete(Long id, String username);
 
     boolean deleteByAnswer(Answer answer);
 }

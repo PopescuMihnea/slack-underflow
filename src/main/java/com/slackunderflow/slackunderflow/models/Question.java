@@ -1,37 +1,21 @@
 package com.slackunderflow.slackunderflow.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "question_id")
-    private Long id;
-
-    @NonNull
-    private String body;
-
-    @Column(name = "timestamp_")
-    private LocalDate timestamp = LocalDate.now();
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+public class Question extends BodyEntity {
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "Question_Topic",

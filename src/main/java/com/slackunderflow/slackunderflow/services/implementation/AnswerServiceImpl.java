@@ -1,12 +1,10 @@
 package com.slackunderflow.slackunderflow.services.implementation;
 
-import com.slackunderflow.slackunderflow.dtos.AnswerDto;
-import com.slackunderflow.slackunderflow.dtos.AnswerResponseDto;
-import com.slackunderflow.slackunderflow.dtos.QuestionDto;
-import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.dtos.requests.AnswerRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.AnswerResponseDto;
+import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.enums.BadgeEnum;
-import com.slackunderflow.slackunderflow.errors.AnswerNotFoundError;
-import com.slackunderflow.slackunderflow.errors.QuestionNotFoundError;
+import com.slackunderflow.slackunderflow.errors.ModelNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.AnswerMapper;
 import com.slackunderflow.slackunderflow.mappers.UserMapper;
@@ -15,13 +13,10 @@ import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.AnswerRepository;
 import com.slackunderflow.slackunderflow.repositories.QuestionRepository;
-import com.slackunderflow.slackunderflow.repositories.SuggestionRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.services.AnswerService;
 import com.slackunderflow.slackunderflow.services.SuggestionService;
-import com.slackunderflow.slackunderflow.services.UserEntityService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,36 +25,37 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class AnswerServiceImpl implements AnswerService {
+@Transactional
+public class AnswerServiceImpl
+        extends BodyEntityServiceImpl<Answer, AnswerResponseDto, AnswerRequestDto, AnswerRepository,
+        AnswerMapper>
+        implements AnswerService {
 
-    private final AnswerRepository answerRepository;
-    private final AnswerMapper answerMapper;
-    private final UserEntityRepository userEntityRepository;
+
     private final QuestionRepository questionRepository;
     private final SuggestionService suggestionService;
     private final UserMapper userMapper;
-    
+
     private static final int MAX_POINTS = 75;
     private static final int MAX_RANK = 3;
     private static final int MIN_RANK = 1;
 
-    @Override
-    public List<AnswerResponseDto> getAll() {
-        return answerRepository.findAll()
-                .stream()
-                .map(answerMapper::fromEntityToDto)
-                .collect(Collectors.toList());
+    public AnswerServiceImpl(AnswerRepository modelRepository, AnswerMapper modelMapper, UserEntityRepository userEntityRepository, QuestionRepository questionRepository, SuggestionService suggestionService, UserMapper userMapper) {
+        super(modelRepository, modelMapper, userEntityRepository);
+        this.questionRepository = questionRepository;
+        this.suggestionService = suggestionService;
+        this.userMapper = userMapper;
     }
+
 
     @Override
     public List<AnswerResponseDto> resetRanksByQuestion(Long questionId) {
         var question = questionRepository
                 .findById(questionId)
                 .orElseThrow(() ->
-                        new QuestionNotFoundError("Question not found with id: ", questionId.toString()));
+                        new ModelNotFoundError("Question not found with id: ", questionId.toString()));
 
-        var answers = answerRepository.findByQuestion(question);
+        var answers = modelRepository.findByQuestion(question);
 
         answers.forEach(answer -> {
             modifyAnswerRank(answer, 0);
@@ -70,10 +66,10 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<AnswerResponseDto> updateRank(Long id, Integer rank, String username) {
-        var answer = answerRepository
+        var answer = modelRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new AnswerNotFoundError("Answer not found with id: ", id.toString()));
+                        new ModelNotFoundError("Answer not found with id: ", id.toString()));
 
         var question = answer.getQuestion();
 
@@ -83,26 +79,26 @@ public class AnswerServiceImpl implements AnswerService {
                         new UserNotFoundError("User not found with username: ", username));
 
         if (!question.getUser().getUsername().equals(user.getUsername())) {
-            throw new AnswerNotFoundError("Answer not found with id: ", id.toString());
+            throw new ModelNotFoundError("Answer not found with id: ", id.toString());
         }
 
         if (rank <= MAX_RANK) {
-            var maxRank = answerRepository.findMaxRankByQuestion(question.getId());
+            var maxRank = modelRepository.findMaxRankByQuestion(question.getId());
 
             if (answer.getRank() >= MIN_RANK && answer.getRank() < MAX_RANK && rank == 0) {
-                var modifyAnswers = answerRepository.findDecrementRanks(rank, question.getId());
+                var modifyAnswers = modelRepository.findDecrementRanks(rank, question.getId());
 
                 modifyAnswers.forEach(modifyAnswer -> {
                     modifyAnswerRank(modifyAnswer, modifyAnswer.getRank() - 1);
                 });
             } else if (answer.getRank() == 0 && rank <= maxRank) {
-                var modifyAnswers = answerRepository.findIncrementRanks(rank, question.getId());
+                var modifyAnswers = modelRepository.findIncrementRanks(rank, question.getId());
 
                 modifyAnswers.forEach(modifyAnswer -> {
                     modifyAnswerRank(modifyAnswer, modifyAnswer.getRank() + 1);
                 });
             } else if (!Objects.equals(answer.getRank(), rank) && answer.getRank() <= MAX_RANK && answer.getRank() >= MIN_RANK && rank <= maxRank) {
-                var otherAnswer = answerRepository.findFirstByRankAndQuestion(rank, question);
+                var otherAnswer = modelRepository.findFirstByRankAndQuestion(rank, question);
 
                 if (otherAnswer.getRank() > answer.getRank()) {
                     modifyAnswerRank(otherAnswer, 0);
@@ -110,7 +106,7 @@ public class AnswerServiceImpl implements AnswerService {
                     modifyAnswerRank(otherAnswer, answer.getRank());
                 }
 
-                answerRepository.save(otherAnswer);
+                modelRepository.save(otherAnswer);
             }
 
             modifyAnswerRank(answer, rank);
@@ -119,92 +115,29 @@ public class AnswerServiceImpl implements AnswerService {
         return getAll();
     }
 
-    @Override
-    public List<AnswerResponseDto> getAllByUser(String username) {
-        var user = userEntityRepository
-                .findByUsername(username)
-                .orElseThrow(() ->
-                        new UserNotFoundError("User not found with username: ", username));
-
-        return answerRepository.findByUser(user)
-                .stream()
-                .map(answerMapper::fromEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AnswerResponseDto> getAllByUser(Long id) {
-        var user = userEntityRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new UserNotFoundError("User not found with id: ", id.toString()));
-
-        return answerRepository.findByUser(user)
-                .stream()
-                .map(answerMapper::fromEntityToDto)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<AnswerResponseDto> getAllByQuestion(Long id) {
         var question = questionRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new QuestionNotFoundError("Question not found with id: ", id.toString()));
+                        new ModelNotFoundError("Question not found with id: ", id.toString()));
 
-        return answerRepository.findByQuestion(question)
+        return modelRepository.findByQuestion(question)
                 .stream()
-                .map(answerMapper::fromEntityToDto)
+                .map(modelMapper::fromEntityToResponse)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public AnswerResponseDto get(Long id) {
-        var answer = answerRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new AnswerNotFoundError("Answer not found with id: ", id.toString()));
-        return answerMapper.fromEntityToDto(answer);
-    }
 
     @Override
-    public AnswerResponseDto create(AnswerDto answerDto, String username) {
-        UserEntity user = userEntityRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundError("User not found", username));
-
-        var answer = answerMapper.fromDtoToEntity(answerDto, user);
-
-        answerRepository.save(answer);
-
-        return answerMapper.fromEntityToDto(answer);
-    }
-
-    @Override
-    public AnswerResponseDto modify(Long id, AnswerDto answerDto, String username) {
-        var answer = answerRepository.findById(id)
-                .orElseThrow(() -> new AnswerNotFoundError("Answer not found with id: ", id.toString()));
-        var user = answer.getUser();
-
-        if (!user.getUsername().equals(username)) {
-            throw new AnswerNotFoundError("Answer not found with id: ", id.toString());
-        }
-
-        answer.setBody(answerDto.getBody());
-        answerRepository.save(answer);
-
-        return answerMapper.fromEntityToDto(answer);
-    }
-
-    @Override
-    @Transactional
     public boolean delete(Long id, String username) {
-        var answer = answerRepository.findById(id)
-                .orElseThrow(() -> new AnswerNotFoundError("Answer not found with id: ", id.toString()));
+        var answer = modelRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundError("Answer not found with id: ", id.toString()));
         var user = answer.getUser();
 
-        if (!user.getUsername().equals(username)) {
-            throw new AnswerNotFoundError("Answer not found with id: ", id.toString());
-        }
+
+        hasAuthority(user, username, id);
 
         if (!suggestionService.deleteByAnswer(answer)) {
             return false;
@@ -213,12 +146,12 @@ public class AnswerServiceImpl implements AnswerService {
         var pointChange = -getPointsFromRank(answer.getRank());
         updatePoints(user.getUsername(), pointChange);
 
-        return answerRepository.customDeleteById(id) == 1;
+        return modelRepository.customDeleteById(id) == 1;
     }
 
     @Override
     public boolean deleteByQuestion(Question question) {
-        var answers = answerRepository.findByQuestion(question);
+        var answers = modelRepository.findByQuestion(question);
 
         AtomicReference<Integer> numberDeleted = new AtomicReference<>(0);
         answers.forEach(answer -> {
@@ -228,7 +161,7 @@ public class AnswerServiceImpl implements AnswerService {
             updatePoints(user.getUsername(), pointChange);
 
             if (suggestionService.deleteByAnswer(answer)) {
-                numberDeleted.updateAndGet(v -> v + answerRepository.customDeleteById(answer.getId()));
+                numberDeleted.updateAndGet(v -> v + modelRepository.customDeleteById(answer.getId()));
             }
         });
 
@@ -254,7 +187,7 @@ public class AnswerServiceImpl implements AnswerService {
         updatePoints(user.getUsername(), pointChange);
 
         answer.setRank(newRank);
-        answerRepository.save(answer);
+        modelRepository.save(answer);
     }
 
     private UserResponseDto updatePoints(String username, Integer points) {

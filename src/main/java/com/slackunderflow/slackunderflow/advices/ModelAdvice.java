@@ -5,13 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ModelAdvice {
-    @ExceptionHandler({AnswerNotFoundError.class, QuestionNotFoundError.class, SuggestionNotFoundError.class, TopicNotFoundError.class})
+    @ExceptionHandler({ModelNotFoundError.class, TopicNotFoundError.class})
     public ResponseEntity<?> modelNotFound(ModelNotFoundError error) {
         Map<String, String> map = new HashMap<>();
         map.put("message", error.getMessage());

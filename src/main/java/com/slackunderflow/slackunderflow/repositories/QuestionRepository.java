@@ -11,13 +11,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public interface QuestionRepository extends JpaRepository<Question, Long> {
+public interface QuestionRepository extends BodyEntityRepository<Question> {
 
     @Modifying
     @Query(value = "DELETE FROM Question q where q.id = ?1")
     int customDeleteById(Long id);
 
-    List<Question> findByUser(UserEntity user);
 
     List<Question> findByTopicsIn(Set<Topic> topics);
 }

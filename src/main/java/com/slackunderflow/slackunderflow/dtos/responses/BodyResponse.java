@@ -1,23 +1,20 @@
-package com.slackunderflow.slackunderflow.dtos;
+package com.slackunderflow.slackunderflow.dtos.responses;
 
-import com.slackunderflow.slackunderflow.models.Answer;
-import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
-public class SuggestionResponseDto {
+@SuperBuilder
+public class BodyResponse {
     private Long id;
     private String body;
     private LocalDate timestamp;
-    private Answer answer;
     private UserEntity user;
 }

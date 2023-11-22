@@ -1,4 +1,4 @@
-package com.slackunderflow.slackunderflow.dtos;
+package com.slackunderflow.slackunderflow.dtos.responses;
 
 
 import com.slackunderflow.slackunderflow.enums.BadgeEnum;

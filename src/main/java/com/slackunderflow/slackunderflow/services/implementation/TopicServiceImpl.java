@@ -2,7 +2,6 @@ package com.slackunderflow.slackunderflow.services.implementation;
 
 import com.slackunderflow.slackunderflow.dtos.TopicDto;
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
-import com.slackunderflow.slackunderflow.errors.QuestionNotFoundError;
 import com.slackunderflow.slackunderflow.errors.TopicNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.TopicMapper;

@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+public interface AnswerRepository extends BodyEntityRepository<Answer> {
     @Modifying
     @Query(value = "DELETE FROM Answer a where a.id = ?1")
     int customDeleteById(Long id);
@@ -20,7 +20,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query(value = "UPDATE Answer a SET a.rank = ?1 WHERE a.id = ?2")
     void setAnswerRank(Long id, Integer rank);*/
 
-    List<Answer> findByUser(UserEntity user);
 
     List<Answer> findByQuestion(Question question);
 

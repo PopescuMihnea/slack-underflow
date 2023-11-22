@@ -1,9 +1,8 @@
 package com.slackunderflow.slackunderflow.mappers;
 
-import com.slackunderflow.slackunderflow.dtos.SuggestionDto;
-import com.slackunderflow.slackunderflow.dtos.SuggestionResponseDto;
-import com.slackunderflow.slackunderflow.errors.AnswerNotFoundError;
-import com.slackunderflow.slackunderflow.models.Answer;
+import com.slackunderflow.slackunderflow.dtos.requests.SuggestionRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.SuggestionResponseDto;
+import com.slackunderflow.slackunderflow.errors.ModelNotFoundError;
 import com.slackunderflow.slackunderflow.models.Suggestion;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.AnswerRepository;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SuggestionMapper {
+public class SuggestionMapper implements BodyEntityMapper<Suggestion, SuggestionResponseDto, SuggestionRequestDto> {
 
     private AnswerRepository answerRepository;
 
-    public SuggestionResponseDto fromEntityToDto(Suggestion suggestion) {
+    public SuggestionResponseDto fromEntityToResponse(Suggestion suggestion) {
         return SuggestionResponseDto.builder()
                 .id(suggestion.getId())
                 .body(suggestion.getBody())
@@ -25,12 +24,12 @@ public class SuggestionMapper {
                 .user(suggestion.getUser()).build();
     }
 
-    public Suggestion fromDtoToEntity(SuggestionDto suggestionDto, UserEntity user) {
+    public Suggestion fromRequestToEntity(SuggestionRequestDto suggestionRequestDto, UserEntity user) {
         var answer = answerRepository
-                .findById(suggestionDto.getAnswerId())
+                .findById(suggestionRequestDto.getAnswerId())
                 .orElseThrow(() ->
-                        new AnswerNotFoundError("Answer not found with id: ", suggestionDto.getAnswerId().toString()));
+                        new ModelNotFoundError("Answer not found with id: ", suggestionRequestDto.getAnswerId().toString()));
 
-        return Suggestion.builder().body(suggestionDto.getBody()).answer(answer).user(user).build();
+        return Suggestion.builder().body(suggestionRequestDto.getBody()).answer(answer).user(user).build();
     }
 }

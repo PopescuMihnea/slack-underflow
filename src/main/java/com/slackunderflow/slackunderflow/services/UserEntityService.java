@@ -1,7 +1,7 @@
 package com.slackunderflow.slackunderflow.services;
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 
 public interface UserEntityService {
     UserResponseDto register(UserDto userDto);

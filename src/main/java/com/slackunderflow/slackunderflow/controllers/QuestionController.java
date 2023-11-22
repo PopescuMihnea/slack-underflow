@@ -1,10 +1,9 @@
 package com.slackunderflow.slackunderflow.controllers;
 
 
-import com.slackunderflow.slackunderflow.dtos.QuestionDto;
-import com.slackunderflow.slackunderflow.dtos.QuestionResponseDto;
+import com.slackunderflow.slackunderflow.dtos.requests.QuestionRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.QuestionResponseDto;
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
-import com.slackunderflow.slackunderflow.models.Topic;
 import com.slackunderflow.slackunderflow.services.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -49,18 +47,18 @@ public class QuestionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<QuestionResponseDto> createQuestion(Authentication authentication, @RequestBody QuestionDto questionDto) {
+    public ResponseEntity<QuestionResponseDto> createQuestion(Authentication authentication, @RequestBody QuestionRequestDto questionRequestDto) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(questionService.create(questionDto, name), HttpStatus.CREATED);
+        return new ResponseEntity<>(questionService.create(questionRequestDto, name), HttpStatus.CREATED);
 
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<QuestionResponseDto> modifyQuestion(Authentication authentication, @RequestBody QuestionDto questionDto, @PathVariable long id) {
+    public ResponseEntity<QuestionResponseDto> modifyQuestion(Authentication authentication, @RequestBody QuestionRequestDto questionRequestDto, @PathVariable long id) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(questionService.modify(id, questionDto, name), HttpStatus.OK);
+        return new ResponseEntity<>(questionService.modify(id, questionRequestDto, name), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

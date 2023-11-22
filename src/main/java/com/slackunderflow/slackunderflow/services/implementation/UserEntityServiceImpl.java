@@ -1,8 +1,7 @@
 package com.slackunderflow.slackunderflow.services.implementation;
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
-import com.slackunderflow.slackunderflow.enums.BadgeEnum;
+import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.UserMapper;
 import com.slackunderflow.slackunderflow.models.Role;

@@ -11,12 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.UUID;
 
-public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
+public interface SuggestionRepository extends BodyEntityRepository<Suggestion> {
     @Modifying
     @Query(value = "DELETE FROM Suggestion s where s.id = ?1")
     int customDeleteById(Long id);
 
-    List<Suggestion> findByUser(UserEntity user);
 
     List<Suggestion> findByAnswer(Answer answer);
 

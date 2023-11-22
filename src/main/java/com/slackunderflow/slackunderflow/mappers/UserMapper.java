@@ -2,7 +2,7 @@ package com.slackunderflow.slackunderflow.mappers;
 
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.models.Role;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import lombok.RequiredArgsConstructor;

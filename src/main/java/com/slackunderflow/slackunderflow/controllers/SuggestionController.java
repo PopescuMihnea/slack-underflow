@@ -1,15 +1,13 @@
 package com.slackunderflow.slackunderflow.controllers;
 
-import com.slackunderflow.slackunderflow.dtos.AnswerDto;
-import com.slackunderflow.slackunderflow.dtos.AnswerResponseDto;
-import com.slackunderflow.slackunderflow.dtos.SuggestionDto;
-import com.slackunderflow.slackunderflow.dtos.SuggestionResponseDto;
-import com.slackunderflow.slackunderflow.services.AnswerService;
+import com.slackunderflow.slackunderflow.dtos.requests.SuggestionRequestDto;
+import com.slackunderflow.slackunderflow.dtos.responses.SuggestionResponseDto;
 import com.slackunderflow.slackunderflow.services.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,18 +45,18 @@ public class SuggestionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<SuggestionResponseDto> createSuggestion(Authentication authentication, @RequestBody SuggestionDto suggestionDto) {
+    public ResponseEntity<SuggestionResponseDto> createSuggestion(Authentication authentication, @RequestBody SuggestionRequestDto suggestionRequestDto) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(suggestionService.create(suggestionDto, name), HttpStatus.CREATED);
+        return new ResponseEntity<>(suggestionService.create(suggestionRequestDto, name), HttpStatus.CREATED);
 
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<SuggestionResponseDto> modifySuggestion(Authentication authentication, @RequestBody SuggestionDto suggestionDto, @PathVariable long id) {
+    public ResponseEntity<SuggestionResponseDto> modifySuggestion(Authentication authentication, @RequestBody SuggestionRequestDto suggestionRequestDto, @PathVariable long id) {
         String name = authentication.getName();
 
-        return new ResponseEntity<>(suggestionService.modify(id, suggestionDto, name), HttpStatus.OK);
+        return new ResponseEntity<>(suggestionService.modify(id, suggestionRequestDto, name), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

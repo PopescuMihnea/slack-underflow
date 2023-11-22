@@ -1,7 +1,7 @@
 package com.slackunderflow.slackunderflow.controllers;
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
