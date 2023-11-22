@@ -1,13 +1,15 @@
 package com.slackunderflow.slackunderflow.repositories;
 
 import com.slackunderflow.slackunderflow.models.Question;
+import com.slackunderflow.slackunderflow.models.Topic;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
@@ -16,4 +18,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     int customDeleteById(Long id);
 
     List<Question> findByUser(UserEntity user);
+
+    List<Question> findByTopicsIn(Set<Topic> topics);
 }

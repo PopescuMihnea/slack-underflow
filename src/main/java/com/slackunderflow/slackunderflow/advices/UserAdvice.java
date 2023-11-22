@@ -23,7 +23,7 @@ public class UserAdvice {
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<?> violata(SQLIntegrityConstraintViolationException error) {
+    public ResponseEntity<?> integrityViolation(SQLIntegrityConstraintViolationException error) {
         Map<String, String> map = new HashMap<>();
         map.put("message", error.getMessage());
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);

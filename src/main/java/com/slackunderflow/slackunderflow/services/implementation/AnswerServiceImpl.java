@@ -3,10 +3,14 @@ package com.slackunderflow.slackunderflow.services.implementation;
 import com.slackunderflow.slackunderflow.dtos.AnswerDto;
 import com.slackunderflow.slackunderflow.dtos.AnswerResponseDto;
 import com.slackunderflow.slackunderflow.dtos.QuestionDto;
+import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
+import com.slackunderflow.slackunderflow.enums.BadgeEnum;
 import com.slackunderflow.slackunderflow.errors.AnswerNotFoundError;
 import com.slackunderflow.slackunderflow.errors.QuestionNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.AnswerMapper;
+import com.slackunderflow.slackunderflow.mappers.UserMapper;
+import com.slackunderflow.slackunderflow.models.Answer;
 import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.AnswerRepository;
@@ -34,7 +38,9 @@ public class AnswerServiceImpl implements AnswerService {
     private final UserEntityRepository userEntityRepository;
     private final QuestionRepository questionRepository;
     private final SuggestionService suggestionService;
-    private final UserEntityService userEntityService;
+    private final UserMapper userMapper;
+    
+    private static final int MAX_POINTS = 75;
     private static final int MAX_RANK = 3;
     private static final int MIN_RANK = 1;
 
@@ -56,12 +62,7 @@ public class AnswerServiceImpl implements AnswerService {
         var answers = answerRepository.findByQuestion(question);
 
         answers.forEach(answer -> {
-            var pointChange = -getPointsFromRank(answer.getRank());
-            var user = answer.getUser();
-
-            userEntityService.updatePoints(user.getUsername(), pointChange);
-            answer.setRank(0);
-            answerRepository.save(answer);
+            modifyAnswerRank(answer, 0);
         });
 
         return getAll();
@@ -89,23 +90,30 @@ public class AnswerServiceImpl implements AnswerService {
             var maxRank = answerRepository.findMaxRankByQuestion(question.getId());
 
             if (answer.getRank() >= MIN_RANK && answer.getRank() < MAX_RANK && rank == 0) {
-                answerRepository.decrementRanks(rank, question.getId());
+                var modifyAnswers = answerRepository.findDecrementRanks(rank, question.getId());
+
+                modifyAnswers.forEach(modifyAnswer -> {
+                    modifyAnswerRank(modifyAnswer, modifyAnswer.getRank() - 1);
+                });
             } else if (answer.getRank() == 0 && rank <= maxRank) {
-                answerRepository.incrementRanks(rank, question.getId());
+                var modifyAnswers = answerRepository.findIncrementRanks(rank, question.getId());
+
+                modifyAnswers.forEach(modifyAnswer -> {
+                    modifyAnswerRank(modifyAnswer, modifyAnswer.getRank() + 1);
+                });
             } else if (!Objects.equals(answer.getRank(), rank) && answer.getRank() <= MAX_RANK && answer.getRank() >= MIN_RANK && rank <= maxRank) {
                 var otherAnswer = answerRepository.findFirstByRankAndQuestion(rank, question);
 
                 if (otherAnswer.getRank() > answer.getRank()) {
-                    otherAnswer.setRank(0);
+                    modifyAnswerRank(otherAnswer, 0);
                 } else {
-                    otherAnswer.setRank(answer.getRank());
+                    modifyAnswerRank(otherAnswer, answer.getRank());
                 }
 
                 answerRepository.save(otherAnswer);
             }
 
-            answer.setRank(rank);
-            answerRepository.save(answer);
+            modifyAnswerRank(answer, rank);
         }
 
         return getAll();
@@ -202,6 +210,9 @@ public class AnswerServiceImpl implements AnswerService {
             return false;
         }
 
+        var pointChange = -getPointsFromRank(answer.getRank());
+        updatePoints(user.getUsername(), pointChange);
+
         return answerRepository.customDeleteById(id) == 1;
     }
 
@@ -211,6 +222,11 @@ public class AnswerServiceImpl implements AnswerService {
 
         AtomicReference<Integer> numberDeleted = new AtomicReference<>(0);
         answers.forEach(answer -> {
+            var pointChange = -getPointsFromRank(answer.getRank());
+            var user = answer.getUser();
+
+            updatePoints(user.getUsername(), pointChange);
+
             if (suggestionService.deleteByAnswer(answer)) {
                 numberDeleted.updateAndGet(v -> v + answerRepository.customDeleteById(answer.getId()));
             }
@@ -225,6 +241,42 @@ public class AnswerServiceImpl implements AnswerService {
             case 2 -> 10;
             case 3 -> 5;
             default -> 0;
+        };
+    }
+
+    private void modifyAnswerRank(Answer answer, Integer newRank) {
+        if (newRank < MIN_RANK || newRank > MAX_RANK) {
+            throw new IllegalArgumentException("The new rank is outside the limits");
+        }
+
+        var pointChange = getPointsFromRank(newRank) - getPointsFromRank(answer.getRank());
+        var user = answer.getUser();
+        updatePoints(user.getUsername(), pointChange);
+
+        answer.setRank(newRank);
+        answerRepository.save(answer);
+    }
+
+    private UserResponseDto updatePoints(String username, Integer points) {
+        var user = userEntityRepository
+                .findByUsername(username).orElseThrow(() -> new UserNotFoundError("User not found with username: ", username));
+
+        var newPoints = user.getPoints() + points;
+        user.setPoints(newPoints);
+
+        var badge = getBadgeFromPoints(newPoints);
+        user.setBadge(badge);
+
+        userEntityRepository.save(user);
+
+        return userMapper.fromEntityToResponseDto(user, "");
+    }
+
+    private BadgeEnum getBadgeFromPoints(Integer points) {
+        return switch (Math.min(points, MAX_POINTS) / 25) {
+            case 1, 2 -> BadgeEnum.INTERMEDIATE;
+            case 3 -> BadgeEnum.BOSS;
+            default -> BadgeEnum.SLAVE;
         };
     }
 }

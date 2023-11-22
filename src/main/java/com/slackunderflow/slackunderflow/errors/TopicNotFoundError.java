@@ -5,17 +5,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-public class TopicNotFoundError extends RuntimeException {
-    private final String body;
-
+public class TopicNotFoundError extends ModelNotFoundError {
     public TopicNotFoundError(String message, TopicEnum topicEnum) {
-        super(message);
-        this.body = topicEnum.toString();
+        super(message, topicEnum.toString());
     }
 
     public TopicNotFoundError(String message, Long id) {
-        super(message);
-        this.body = id.toString();
+        super(message, id.toString());
     }
 
 }

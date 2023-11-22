@@ -1,9 +1,7 @@
 package com.slackunderflow.slackunderflow.services;
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserLoginDto;
 import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserEntityService {
     UserResponseDto register(UserDto userDto);
@@ -15,6 +13,4 @@ public interface UserEntityService {
     UserResponseDto get(Long id);
 
     boolean delete(String username);
-
-    UserResponseDto updatePoints(String username, Integer points);
 }

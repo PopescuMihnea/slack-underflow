@@ -2,6 +2,7 @@ package com.slackunderflow.slackunderflow.services.implementation;
 
 import com.slackunderflow.slackunderflow.dtos.QuestionDto;
 import com.slackunderflow.slackunderflow.dtos.QuestionResponseDto;
+import com.slackunderflow.slackunderflow.enums.TopicEnum;
 import com.slackunderflow.slackunderflow.errors.QuestionNotFoundError;
 import com.slackunderflow.slackunderflow.errors.TopicNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
@@ -18,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,18 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new UserNotFoundError("User not found with id", id.toString()));
 
         return questionRepository.findByUser(user)
+                .stream()
+                .map(questionMapper::fromEntityToDto)
+                .toList();
+    }
+
+    @Override
+    public List<QuestionResponseDto> getAllByTopics(List<TopicEnum> topics) {
+        var topicEntities = topics.stream().map(
+                topic -> topicRepository.findByTopic(topic).orElseThrow(() -> new TopicNotFoundError("Topic not found with type: ", topic))
+        ).collect(Collectors.toSet());
+
+        return questionRepository.findByTopicsIn(new HashSet<>(topicEntities))
                 .stream()
                 .map(questionMapper::fromEntityToDto)
                 .toList();

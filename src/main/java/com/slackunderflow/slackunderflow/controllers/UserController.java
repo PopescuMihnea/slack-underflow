@@ -1,9 +1,9 @@
 package com.slackunderflow.slackunderflow.controllers;
 
 import com.slackunderflow.slackunderflow.dtos.UserDto;
-import com.slackunderflow.slackunderflow.dtos.UserLoginDto;
 import com.slackunderflow.slackunderflow.dtos.UserResponseDto;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +21,12 @@ public class UserController {
     private final UserEntityService userEntityService;
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<UserResponseDto> get(@PathVariable long id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable long id) {
         return new ResponseEntity<>(userEntityService.get(id), HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> register(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserResponseDto> register(@Valid @RequestBody UserDto userDto) {
         UserResponseDto userResponseDto = userEntityService.register(userDto);
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }

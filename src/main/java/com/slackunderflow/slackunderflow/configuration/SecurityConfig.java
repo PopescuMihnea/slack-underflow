@@ -47,7 +47,7 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                            auth.requestMatchers("/auth/**").permitAll();
+                            auth.requestMatchers("/user/login", "/user/register").permitAll();
                             auth.requestMatchers("/caca/admin/**").hasRole("ADMIN");
                             auth.anyRequest().hasAnyRole("ADMIN", "USER");
 //                            auth.anyRequest().authenticated();

@@ -27,23 +27,14 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Answer findFirstByRankAndQuestion(Integer rank, Question question);
 
     @Modifying
-    @Query("UPDATE Answer a " +
-            "SET a.rank = CASE " +
-            "    WHEN a.rank BETWEEN 1 AND 2 THEN a.rank + 1 " +
-            "    WHEN a.rank = 3 THEN 0 " +
-            "    ELSE a.rank " +
-            "END " +
-            "WHERE a.question.id = :questionId AND a.rank >= :insertingRank")
-    void incrementRanks(@Param("insertingRank") int insertingRank, @Param("questionId") Long questionId);
+    @Query("SELECT a FROM Answer a " +
+            "WHERE a.question.id = :questionId AND a.rank BETWEEN 1 AND 3 AND a.rank >= :insertingRank")
+    List<Answer> findIncrementRanks(@Param("insertingRank") int insertingRank, @Param("questionId") Long questionId);
 
     @Modifying
-    @Query("UPDATE Answer a " +
-            "SET a.rank = CASE " +
-            "    WHEN a.rank > 0 AND a.rank <= 3 AND a.rank > :removingRank THEN a.rank - 1 " +
-            "    ELSE a.rank " +
-            "END " +
-            "WHERE a.question.id = :questionId")
-    void decrementRanks(@Param("removingRank") int removingRank, @Param("questionId") Long questionId);
+    @Query("SELECT a FROM Answer a " +
+            "WHERE a.question.id = :questionId AND a.rank BETWEEN 2 AND 3 AND a.rank > :removingRank")
+    List<Answer> findDecrementRanks(@Param("removingRank") int removingRank, @Param("questionId") Long questionId);
 
     @Query("SELECT COALESCE(MAX(a.rank), 0) FROM Answer a WHERE a.question.id =  ?1")
     Integer findMaxRankByQuestion(Long questionId);

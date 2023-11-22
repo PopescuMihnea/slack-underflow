@@ -3,6 +3,8 @@ package com.slackunderflow.slackunderflow.controllers;
 
 import com.slackunderflow.slackunderflow.dtos.QuestionDto;
 import com.slackunderflow.slackunderflow.dtos.QuestionResponseDto;
+import com.slackunderflow.slackunderflow.enums.TopicEnum;
+import com.slackunderflow.slackunderflow.models.Topic;
 import com.slackunderflow.slackunderflow.services.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,11 @@ public class QuestionController {
     @GetMapping("/getAll")
     public ResponseEntity<List<QuestionResponseDto>> getAllQuestions() {
         return new ResponseEntity<>(questionService.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByTopics")
+    public ResponseEntity<List<QuestionResponseDto>> getAllQuestionsByTopics(@RequestBody List<TopicEnum> topics) {
+        return new ResponseEntity<>(questionService.getAllByTopics(topics), HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")

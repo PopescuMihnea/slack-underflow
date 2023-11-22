@@ -1,6 +1,7 @@
 package com.slackunderflow.slackunderflow.repositories;
 
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
+import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -5,11 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-public class QuestionNotFoundError extends RuntimeException {
-    private final String body;
-
+public class QuestionNotFoundError extends ModelNotFoundError {
     public QuestionNotFoundError(String message, String body) {
-        super(message);
-        this.body = body;
+        super(message, body);
     }
 }
