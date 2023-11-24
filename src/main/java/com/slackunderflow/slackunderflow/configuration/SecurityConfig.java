@@ -42,12 +42,18 @@ public class SecurityConfig {
 
     private final RsaKeyProperties keys;
 
+    private final String[] ADMIN_LIST = {
+            "/answer/getAll",
+            "/suggestion/getAll"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                             auth.requestMatchers("/user/login", "/user/register").permitAll();
+                            auth.requestMatchers(ADMIN_LIST).hasRole("ADMIN");
                             auth.anyRequest().hasAnyRole("ADMIN", "USER");
 //                            auth.anyRequest().authenticated();
                         }

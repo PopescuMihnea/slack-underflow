@@ -56,14 +56,14 @@ public class AnswerController {
         return new ResponseEntity<>(answerService.resetRanksByQuestion(questionId), HttpStatus.OK);
     }
 
-    @PutMapping("/modify/{id}")
+    @PatchMapping("/modify/{id}")
     public ResponseEntity<AnswerResponseDto> modifyAnswer(Authentication authentication, @RequestBody AnswerRequestDto answerRequestDto, @PathVariable long id) {
         String name = authentication.getName();
 
         return new ResponseEntity<>(answerService.modify(id, answerRequestDto, name), HttpStatus.OK);
     }
 
-    @PatchMapping("/modify/{id}")
+    @PatchMapping("/modify/rank/{id}")
     public ResponseEntity<List<AnswerResponseDto>> updateRank(Authentication authentication, @PathVariable Long id, @RequestParam Integer rank) {
         String name = authentication.getName();
 
