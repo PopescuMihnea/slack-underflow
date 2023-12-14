@@ -47,7 +47,13 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                            auth.requestMatchers("/user/login", "/user/register").permitAll();
+                            auth.requestMatchers(
+                                    "/user/login",
+                                    "/user/register",
+                                    "/v3/api-docs/**",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html"
+                            ).permitAll();
                             auth.anyRequest().hasAnyRole("ADMIN", "USER");
 //                            auth.anyRequest().authenticated();
                         }
