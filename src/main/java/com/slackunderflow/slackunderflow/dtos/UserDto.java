@@ -13,12 +13,10 @@ import lombok.*;
 public class UserDto {
 
 
-    @NonNull
-    @NotBlank
+    @NotEmpty
     private String username;
 
-    @NonNull
-    @NotBlank
+    @NotEmpty
     private String password;
 
 

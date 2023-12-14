@@ -17,6 +17,7 @@ import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.services.AnswerService;
 import com.slackunderflow.slackunderflow.services.SuggestionService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,10 +51,17 @@ public class AnswerServiceImpl
 
     @Override
     public List<AnswerResponseDto> resetRanksByQuestion(Long questionId) {
+        UserEntity authUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
         var question = questionRepository
                 .findById(questionId)
                 .orElseThrow(() ->
                         new ModelNotFoundError("Question not found with id: ", questionId.toString()));
+
+        if (!authUser.getUsername().equals(question.getUser().getUsername())) {
+            throw new ModelNotFoundError("Question not found with id: ", questionId.toString());
+        }
 
         var answers = modelRepository.findByQuestion(question);
 
