@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AnswerMapper implements BodyEntityMapper<Answer, AnswerResponseDto, AnswerRequestDto> {
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     public AnswerResponseDto fromEntityToResponse(Answer answer) {
         return AnswerResponseDto.builder()

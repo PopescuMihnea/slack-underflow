@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SuggestionMapper implements BodyEntityMapper<Suggestion, SuggestionResponseDto, SuggestionRequestDto> {
 
-    private AnswerRepository answerRepository;
+    private final AnswerRepository answerRepository;
 
     public SuggestionResponseDto fromEntityToResponse(Suggestion suggestion) {
         return SuggestionResponseDto.builder()
