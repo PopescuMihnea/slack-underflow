@@ -5,10 +5,13 @@ import com.slackunderflow.slackunderflow.dtos.requests.QuestionRequestDto;
 import com.slackunderflow.slackunderflow.dtos.responses.QuestionResponseDto;
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
 import com.slackunderflow.slackunderflow.services.QuestionService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/question")
 @RequiredArgsConstructor
+@Validated
 public class QuestionController {
 
     private final QuestionService questionService;
@@ -30,23 +34,29 @@ public class QuestionController {
         return new ResponseEntity<>(questionService.getAllByTopics(topics), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllByTitle")
+    public ResponseEntity<List<QuestionResponseDto>> getAllQuestionsByTitle(@RequestBody String title) {
+        return new ResponseEntity<>(questionService.getAllByTitle(title), HttpStatus.OK);
+    }
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<QuestionResponseDto> getQuestion(@PathVariable long id) {
+    public ResponseEntity<QuestionResponseDto> getQuestion(@PathVariable @NotBlank @Min(0) long id) {
         return new ResponseEntity<>(questionService.get(id), HttpStatus.OK);
     }
 
     @GetMapping("/get/user/{id}")
-    public ResponseEntity<List<QuestionResponseDto>> getQuestionsByUser(@PathVariable long id) {
+    public ResponseEntity<List<QuestionResponseDto>> getQuestionsByUser(@PathVariable @NotBlank @Min(0) long id) {
         return new ResponseEntity<>(questionService.getAllByUser(id), HttpStatus.OK);
     }
 
     @GetMapping("/get/user/{username}")
-    public ResponseEntity<List<QuestionResponseDto>> getQuestionsByUser(@PathVariable String username) {
+    public ResponseEntity<List<QuestionResponseDto>> getQuestionsByUser(@PathVariable @NotBlank String username) {
         return new ResponseEntity<>(questionService.getAllByUser(username), HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<QuestionResponseDto> createQuestion(Authentication authentication, @RequestBody QuestionRequestDto questionRequestDto) {
+    public ResponseEntity<QuestionResponseDto> createQuestion(Authentication authentication,
+                                                              @RequestBody QuestionRequestDto questionRequestDto) {
         String name = authentication.getName();
 
         return new ResponseEntity<>(questionService.create(questionRequestDto, name), HttpStatus.CREATED);
@@ -54,14 +64,17 @@ public class QuestionController {
     }
 
     @PutMapping("/modify/{id}")
-    public ResponseEntity<QuestionResponseDto> modifyQuestion(Authentication authentication, @RequestBody QuestionRequestDto questionRequestDto, @PathVariable long id) {
+    public ResponseEntity<QuestionResponseDto> modifyQuestion(Authentication authentication,
+                                                              @RequestBody QuestionRequestDto questionRequestDto,
+                                                              @PathVariable @NotBlank @Min(0) long id) {
         String name = authentication.getName();
 
         return new ResponseEntity<>(questionService.modify(id, questionRequestDto, name), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteQuestion(Authentication authentication, @PathVariable long id) {
+    public ResponseEntity<String> deleteQuestion(Authentication authentication,
+                                                 @PathVariable @NotBlank @Min(0) long id) {
         String name = authentication.getName();
 
         var result = questionService.delete(id, name);

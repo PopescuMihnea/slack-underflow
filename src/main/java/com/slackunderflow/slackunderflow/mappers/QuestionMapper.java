@@ -29,13 +29,17 @@ public class QuestionMapper implements BodyEntityMapper<Question, QuestionRespon
                 .map(Topic::getTopic)
                 .collect(Collectors.toSet());
 
+        var userEntity = question.getUser();
+        userEntity.setPassword("hehe :)");
+
 
         return QuestionResponseDto.builder().
                 id(question.getId()).
+                title(question.getTitle()).
                 topics(topicEnums).
                 body(question.getBody()).
                 timestamp(question.getTimestamp()).
-                user(question.getUser()).build();
+                user(userEntity).build();
     }
 
     public Question fromRequestToEntity(QuestionRequestDto questionRequestDto, UserEntity user) {
@@ -45,8 +49,8 @@ public class QuestionMapper implements BodyEntityMapper<Question, QuestionRespon
                 .map(topic -> topicRepository.findByTopic(topic).orElseThrow(() -> new TopicNotFoundError("Topic not found", topic)))
                 .collect(Collectors.toSet());
 
-
         return Question.builder()
+                .title(questionRequestDto.getTitle())
                 .body(questionRequestDto.getBody())
                 .timestamp(LocalDate.now())
                 .topics(topics)

@@ -17,10 +17,9 @@ import java.time.LocalDate;
 @MappedSuperclass
 public class BodyEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
     private String body;
 
     @Column(name = "timestamp_")

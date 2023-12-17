@@ -16,12 +16,15 @@ public class SuggestionMapper implements BodyEntityMapper<Suggestion, Suggestion
     private final AnswerRepository answerRepository;
 
     public SuggestionResponseDto fromEntityToResponse(Suggestion suggestion) {
+        var userEntity = suggestion.getUser();
+        userEntity.setPassword("hehe :)");
+
         return SuggestionResponseDto.builder()
                 .id(suggestion.getId())
                 .body(suggestion.getBody())
                 .timestamp(suggestion.getTimestamp())
                 .answer(suggestion.getAnswer())
-                .user(suggestion.getUser()).build();
+                .user(userEntity).build();
     }
 
     public Suggestion fromRequestToEntity(SuggestionRequestDto suggestionRequestDto, UserEntity user) {

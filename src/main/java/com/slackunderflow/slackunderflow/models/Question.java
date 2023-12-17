@@ -17,6 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Question extends BodyEntity {
 
+    private String title;
+
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "Question_Topic",
             joinColumns = {@JoinColumn(name = "question_id")},

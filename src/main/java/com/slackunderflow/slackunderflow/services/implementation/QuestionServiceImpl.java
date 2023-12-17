@@ -52,6 +52,14 @@ public class QuestionServiceImpl
                 .toList();
     }
 
+    @Override
+    public List<QuestionResponseDto> getAllByTitle(String title) {
+        return modelRepository.findByTitleContaining(title)
+                .stream()
+                .map(modelMapper::fromEntityToResponse)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public QuestionResponseDto modify(Long id, QuestionRequestDto questionRequestDto, String username) {

@@ -16,13 +16,16 @@ public class AnswerMapper implements BodyEntityMapper<Answer, AnswerResponseDto,
     private final QuestionRepository questionRepository;
 
     public AnswerResponseDto fromEntityToResponse(Answer answer) {
+        var userEntity = answer.getUser();
+        userEntity.setPassword("hehe :)");
+
         return AnswerResponseDto.builder()
                 .id(answer.getId())
                 .body(answer.getBody())
                 .rank(answer.getRank())
                 .timestamp(answer.getTimestamp())
                 .question(answer.getQuestion())
-                .user(answer.getUser()).build();
+                .user(userEntity).build();
     }
 
     public Answer fromRequestToEntity(AnswerRequestDto answerRequestDto, UserEntity user) {

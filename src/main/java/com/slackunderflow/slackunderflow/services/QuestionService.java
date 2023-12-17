@@ -17,6 +17,7 @@ public interface QuestionService
 
     List<QuestionResponseDto> getAllByTopics(List<TopicEnum> topics);
 
+    List<QuestionResponseDto> getAllByTitle(String title);
 
     boolean deleteByUser(UserEntity user);
 }

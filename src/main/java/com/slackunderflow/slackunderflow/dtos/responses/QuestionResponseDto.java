@@ -15,6 +15,8 @@ import java.util.UUID;
 @Data
 @SuperBuilder
 public class QuestionResponseDto extends BodyResponse {
+
+    private String title;
     private Set<TopicEnum> topics;
     private LocalDate timestamp;
 

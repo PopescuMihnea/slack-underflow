@@ -18,5 +18,7 @@ public interface QuestionRepository extends BodyEntityRepository<Question> {
     int customDeleteById(Long id);
 
 
+    List<Question> findByTitleContaining(String title);
+
     List<Question> findByTopicsIn(Set<Topic> topics);
 }

@@ -9,7 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 public class AnswerRequestDto extends BodyRequest {
-    @NonNull
-    @Min(0)
+
+    @NotEmpty(message = "Must have question id")
+    @Min(value = 0, message = "Invalid question id")
     private Long questionId;
 }
