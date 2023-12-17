@@ -14,7 +14,6 @@ public interface QuestionService
         extends BodyEntityService<Question, QuestionResponseDto, QuestionRequestDto,
         QuestionRepository, QuestionMapper> {
 
-
     List<QuestionResponseDto> getAllByTopics(List<TopicEnum> topics);
 
     List<QuestionResponseDto> getAllByTitle(String title);

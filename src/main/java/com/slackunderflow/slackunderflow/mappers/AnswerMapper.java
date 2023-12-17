@@ -6,26 +6,32 @@ import com.slackunderflow.slackunderflow.errors.ModelNotFoundError;
 import com.slackunderflow.slackunderflow.models.Answer;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.QuestionRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class AnswerMapper implements BodyEntityMapper<Answer, AnswerResponseDto, AnswerRequestDto> {
+public class AnswerMapper extends BodyEntityMapper<Answer, AnswerResponseDto, AnswerRequestDto> {
 
     private final QuestionRepository questionRepository;
 
-    public AnswerResponseDto fromEntityToResponse(Answer answer) {
-        var userEntity = answer.getUser();
-        userEntity.setPassword("hehe :)");
+    public AnswerMapper(QuestionRepository questionRepository, UserMapper userMapper) {
+        super(userMapper);
+        this.questionRepository = questionRepository;
+    }
 
+    public AnswerResponseDto fromEntityToResponse(Answer answer) {
         return AnswerResponseDto.builder()
                 .id(answer.getId())
                 .body(answer.getBody())
                 .rank(answer.getRank())
                 .timestamp(answer.getTimestamp())
                 .question(answer.getQuestion())
-                .user(userEntity).build();
+                .user(userMapper.fromEntityToResponseDto(answer.getUser(), null)).build();
+
     }
 
     public Answer fromRequestToEntity(AnswerRequestDto answerRequestDto, UserEntity user) {

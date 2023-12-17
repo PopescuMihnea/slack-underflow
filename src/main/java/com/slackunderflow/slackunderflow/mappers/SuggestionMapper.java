@@ -6,14 +6,22 @@ import com.slackunderflow.slackunderflow.errors.ModelNotFoundError;
 import com.slackunderflow.slackunderflow.models.Suggestion;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.AnswerRepository;
+import com.slackunderflow.slackunderflow.repositories.TopicRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class SuggestionMapper implements BodyEntityMapper<Suggestion, SuggestionResponseDto, SuggestionRequestDto> {
+public class SuggestionMapper extends BodyEntityMapper<Suggestion, SuggestionResponseDto, SuggestionRequestDto> {
 
     private final AnswerRepository answerRepository;
+
+    public SuggestionMapper(AnswerRepository answerRepository, UserMapper userMapper) {
+        super(userMapper);
+        this.answerRepository = answerRepository;
+    }
 
     public SuggestionResponseDto fromEntityToResponse(Suggestion suggestion) {
         var userEntity = suggestion.getUser();
@@ -24,7 +32,7 @@ public class SuggestionMapper implements BodyEntityMapper<Suggestion, Suggestion
                 .body(suggestion.getBody())
                 .timestamp(suggestion.getTimestamp())
                 .answer(suggestion.getAnswer())
-                .user(userEntity).build();
+                .user(userMapper.fromEntityToResponseDto(suggestion.getUser(), null)).build();
     }
 
     public Suggestion fromRequestToEntity(SuggestionRequestDto suggestionRequestDto, UserEntity user) {

@@ -40,6 +40,10 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Logs in the user(sends a jwt token to be used in authenticating the user)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The user has successfully logged in"),
+    })
     @PutMapping("/login")
     public ResponseEntity<UserResponseDto> login(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(
@@ -50,7 +54,7 @@ public class UserController {
 
     @Operation(summary = "Modifies the logged in user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Modified the user with the date provided",
+            @ApiResponse(responseCode = "200", description = "Modified the user with the data provided",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserResponseDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid user data")

@@ -22,6 +22,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserEntityServiceImpl implements UserEntityService {
 
     private final UserEntityRepository userEntityRepository;
@@ -56,7 +57,7 @@ public class UserEntityServiceImpl implements UserEntityService {
         user.setPassword(userDto.getPassword());
         userEntityRepository.save(user);
 
-        return userMapper.fromEntityToResponseDto(user, "");
+        return userMapper.fromEntityToResponseDto(user, null);
     }
 
     @Override
@@ -64,11 +65,10 @@ public class UserEntityServiceImpl implements UserEntityService {
         var user = userEntityRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundError("User not found with id: ", id.toString()));
 
-        return userMapper.fromEntityToResponseDto(user, "");
+        return userMapper.fromEntityToResponseDto(user, null);
     }
 
     @Override
-    @Transactional
     public boolean delete(String username) {
         var user = userEntityRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundError("User is not found", username));
 

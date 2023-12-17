@@ -16,5 +16,5 @@ public class BodyResponse {
     private Long id;
     private String body;
     private LocalDate timestamp;
-    private UserEntity user;
+    private UserResponseDto user;
 }

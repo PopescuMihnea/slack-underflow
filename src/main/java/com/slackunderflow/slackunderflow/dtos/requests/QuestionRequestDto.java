@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 public class QuestionRequestDto extends BodyRequest {
 
-    @NotEmpty(message = "Must have a title")
+    @NotBlank(message = "Must have a title")
     @Size(min = 5, message = "Enter a more descriptive(longer) title")
     @Size(max = 100, message = "The title is too long")
     private String title;

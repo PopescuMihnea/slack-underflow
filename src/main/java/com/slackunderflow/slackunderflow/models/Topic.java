@@ -17,9 +17,6 @@ import java.util.Set;
 public class Topic {
 
     @Id
-    @Column(name = "topic_id")
+    @Column(name = "id")
     private TopicEnum topic;
-
-    @ManyToMany(mappedBy = "topics", cascade = CascadeType.REMOVE)
-    private Set<Question> questions;
 }

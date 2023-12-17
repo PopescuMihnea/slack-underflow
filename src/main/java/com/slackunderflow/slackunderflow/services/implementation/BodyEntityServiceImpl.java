@@ -6,16 +6,19 @@ import com.slackunderflow.slackunderflow.errors.ModelNotFoundError;
 import com.slackunderflow.slackunderflow.errors.UserNotFoundError;
 import com.slackunderflow.slackunderflow.mappers.BodyEntityMapper;
 import com.slackunderflow.slackunderflow.models.BodyEntity;
+import com.slackunderflow.slackunderflow.models.Question;
 import com.slackunderflow.slackunderflow.models.UserEntity;
 import com.slackunderflow.slackunderflow.repositories.BodyEntityRepository;
 import com.slackunderflow.slackunderflow.repositories.UserEntityRepository;
 import com.slackunderflow.slackunderflow.services.BodyEntityService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 public abstract class BodyEntityServiceImpl<MODEL extends BodyEntity, RESP extends BodyResponse, REQ extends BodyRequest,
         R extends BodyEntityRepository<MODEL>,
         MAPPER extends BodyEntityMapper<MODEL, RESP, REQ>> implements BodyEntityService<MODEL, RESP, REQ, R, MAPPER> {

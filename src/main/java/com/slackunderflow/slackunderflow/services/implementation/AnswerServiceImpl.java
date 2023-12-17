@@ -210,7 +210,7 @@ public class AnswerServiceImpl
 
         userEntityRepository.save(user);
 
-        return userMapper.fromEntityToResponseDto(user, "");
+        return userMapper.fromEntityToResponseDto(user, null);
     }
 
     private BadgeEnum getBadgeFromPoints(Integer points) {

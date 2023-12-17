@@ -17,6 +17,7 @@ public class UserDto {
     }
 
     @NotEmpty(message = "You need to enter a username")
+    @NotEmpty(message = "You need to enter a username", groups = {RegisteringUser.class})
     private String username;
 
     @NotEmpty(message = "You need to enter a password")

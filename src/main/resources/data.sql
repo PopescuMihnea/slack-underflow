@@ -1,19 +1,18 @@
-INSERT
- IGNORE
- INTO topic (topic_id)
+INSERT IGNORE
+INTO topic (id)
+VALUES (0);
+INSERT IGNORE
+INTO topic (id)
 VALUES (1);
 INSERT IGNORE
- INTO topic (topic_id)
+INTO topic (id)
 VALUES (2);
 INSERT IGNORE
- INTO topic (topic_id)
+INTO topic (id)
 VALUES (3);
 INSERT IGNORE
- INTO topic (topic_id)
+INTO topic (id)
 VALUES (4);
-INSERT IGNORE
- INTO topic (topic_id)
-VALUES (5);
 --
 -- INSERT IGNORE
 --  INTO roles (role_id)

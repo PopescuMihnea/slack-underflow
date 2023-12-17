@@ -5,6 +5,7 @@ import com.slackunderflow.slackunderflow.dtos.requests.QuestionRequestDto;
 import com.slackunderflow.slackunderflow.dtos.responses.QuestionResponseDto;
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
 import com.slackunderflow.slackunderflow.services.QuestionService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

@@ -1,5 +1,6 @@
 package com.slackunderflow.slackunderflow.dtos.requests;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @SuperBuilder
 public class BodyRequest {
 
-    @NotEmpty(message = "Must have a body")
+    @NotBlank(message = "Must have a body")
     @Size(max = 2000, message = "The body is too long")
     private String body;
 }
