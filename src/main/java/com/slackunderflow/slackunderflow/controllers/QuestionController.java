@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/question")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class QuestionController {
 
     private final QuestionService questionService;

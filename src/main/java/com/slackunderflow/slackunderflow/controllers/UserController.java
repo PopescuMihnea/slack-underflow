@@ -15,7 +15,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserEntityService userEntityService;

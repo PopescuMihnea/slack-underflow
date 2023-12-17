@@ -45,9 +45,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-@OpenAPIDefinition(info = @Info(title = "REST API", version = "1.0",
-        description = "REST API description...",
-        contact = @Contact(name = "Name Surname")),
+@OpenAPIDefinition(info = @Info(title = "QA API", version = "1.0",
+        description = "API for questions and answers",
+        contact = @Contact(name = "Popescu Mihnea-Valentin")),
         security = {@SecurityRequirement(name = "bearerToken")}
 )
 @SecuritySchemes({

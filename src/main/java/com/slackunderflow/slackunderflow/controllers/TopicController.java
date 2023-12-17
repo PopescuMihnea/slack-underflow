@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/topic")
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class TopicController {
 
     private final TopicService topicService;
