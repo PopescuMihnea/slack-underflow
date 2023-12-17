@@ -15,10 +15,10 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserEntityService userEntityService;
+
 
     @GetMapping("/get/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable long id) {

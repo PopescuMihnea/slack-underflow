@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/answer")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AnswerController {
     private final AnswerService answerService;
 

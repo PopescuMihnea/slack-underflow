@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/suggestion")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class SuggestionController {
     private final SuggestionService suggestionService;
 
