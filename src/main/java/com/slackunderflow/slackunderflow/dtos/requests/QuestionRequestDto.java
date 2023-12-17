@@ -1,6 +1,7 @@
 package com.slackunderflow.slackunderflow.dtos.requests;
 
 import com.slackunderflow.slackunderflow.enums.TopicEnum;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;

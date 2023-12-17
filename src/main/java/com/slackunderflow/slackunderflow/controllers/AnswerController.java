@@ -3,6 +3,7 @@ package com.slackunderflow.slackunderflow.controllers;
 import com.slackunderflow.slackunderflow.dtos.requests.AnswerRequestDto;
 import com.slackunderflow.slackunderflow.dtos.responses.AnswerResponseDto;
 import com.slackunderflow.slackunderflow.services.AnswerService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -28,17 +29,17 @@ public class AnswerController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<AnswerResponseDto> getAnswer(@PathVariable @NotBlank @Min(0) long id) {
+    public ResponseEntity<AnswerResponseDto> getAnswer(@PathVariable @Min(0) long id) {
         return new ResponseEntity<>(answerService.get(id), HttpStatus.OK);
     }
 
     @GetMapping("/get/user/{id}")
-    public ResponseEntity<List<AnswerResponseDto>> getAnswersByUser(@PathVariable @NotBlank @Min(0) long id) {
+    public ResponseEntity<List<AnswerResponseDto>> getAnswersByUser(@PathVariable @Min(0) long id) {
         return new ResponseEntity<>(answerService.getAllByUser(id), HttpStatus.OK);
     }
 
     @GetMapping("/get/question/{questionId}")
-    public ResponseEntity<List<AnswerResponseDto>> getAnswersByQuestion(@PathVariable @NotBlank @Min(0) long questionId) {
+    public ResponseEntity<List<AnswerResponseDto>> getAnswersByQuestion(@PathVariable @Min(0) long questionId) {
         return new ResponseEntity<>(answerService.getAllByQuestion(questionId), HttpStatus.OK);
     }
 
@@ -49,7 +50,7 @@ public class AnswerController {
 
     @PostMapping("/create")
     public ResponseEntity<AnswerResponseDto> createAnswer(Authentication authentication,
-                                                          @RequestBody AnswerRequestDto answerRequestDto) {
+                                                          @Valid @RequestBody AnswerRequestDto answerRequestDto) {
         String name = authentication.getName();
 
         return new ResponseEntity<>(answerService.create(answerRequestDto, name), HttpStatus.CREATED);
@@ -57,14 +58,14 @@ public class AnswerController {
     }
 
     @PatchMapping("/reset/{questionId}")
-    public ResponseEntity<List<AnswerResponseDto>> resetRank(@PathVariable @NotBlank @Min(0) long questionId) {
+    public ResponseEntity<List<AnswerResponseDto>> resetRank(@PathVariable @Min(0) long questionId) {
         return new ResponseEntity<>(answerService.resetRanksByQuestion(questionId), HttpStatus.OK);
     }
 
     @PatchMapping("/modify/{id}")
     public ResponseEntity<AnswerResponseDto> modifyAnswer(Authentication authentication,
-                                                          @RequestBody AnswerRequestDto answerRequestDto,
-                                                          @PathVariable @NotBlank @Min(0) long id) {
+                                                          @Valid @RequestBody AnswerRequestDto answerRequestDto,
+                                                          @PathVariable @Min(0) long id) {
         String name = authentication.getName();
 
         return new ResponseEntity<>(answerService.modify(id, answerRequestDto, name), HttpStatus.OK);
@@ -72,7 +73,7 @@ public class AnswerController {
 
     @PatchMapping("/modify/rank/{id}")
     public ResponseEntity<List<AnswerResponseDto>> updateRank(Authentication authentication,
-                                                              @PathVariable @NotBlank @Min(0) long id,
+                                                              @PathVariable @Min(0) long id,
                                                               @RequestParam @Min(1) @Max(3) Integer rank) {
         String name = authentication.getName();
 
@@ -81,7 +82,7 @@ public class AnswerController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAnswer(Authentication authentication,
-                                               @PathVariable long id) {
+                                               @PathVariable @Min(0) long id) {
         String name = authentication.getName();
 
         var result = answerService.delete(id, name);

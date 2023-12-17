@@ -3,7 +3,11 @@ package com.slackunderflow.slackunderflow.controllers;
 import com.slackunderflow.slackunderflow.dtos.UserDto;
 import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.services.UserEntityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +30,7 @@ public class UserController {
 
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable @NotBlank @Min(0) long id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable @Min(0) long id) {
         return new ResponseEntity<>(userEntityService.get(id), HttpStatus.OK);
     }
 
@@ -44,9 +48,18 @@ public class UserController {
         );
     }
 
+    @Operation(summary = "Modifies the logged in user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Modified the user with the date provided",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponseDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid user data")
+    })
     @PutMapping("/modify")
     public ResponseEntity<UserResponseDto> modify(Authentication authentication,
-                                                  @RequestBody UserDto userDto) {
+                                                  @io.swagger.v3.oas.annotations.parameters.
+                                                          RequestBody(description = "The data of the user that is to be modified", required = true)
+                                                  @Valid @RequestBody UserDto userDto) {
         String name = authentication.getName();
 
         if (Objects.equals(name, userDto.getUsername())) {
