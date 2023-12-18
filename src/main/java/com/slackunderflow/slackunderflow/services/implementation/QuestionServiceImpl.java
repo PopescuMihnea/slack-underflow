@@ -72,6 +72,7 @@ public class QuestionServiceImpl
         }
 
         question.setBody(questionRequestDto.getBody());
+        question.setTitle(questionRequestDto.getTitle());
         question.setTopics(
                 questionRequestDto.
                         getTopics()

@@ -51,15 +51,6 @@ import java.util.Collections;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-@OpenAPIDefinition(info = @Info(title = "QA API", version = "1.0",
-        description = "API for questions and answers",
-        contact = @Contact(name = "Popescu Mihnea-Valentin")),
-        security = {@SecurityRequirement(name = "bearerToken")}
-)
-@SecuritySchemes({
-        @SecurityScheme(name = "bearerToken", type = SecuritySchemeType.HTTP,
-                scheme = "bearer", bearerFormat = "JWT")
-})
 public class SecurityConfig {
 
     private final RsaKeyProperties keys;
