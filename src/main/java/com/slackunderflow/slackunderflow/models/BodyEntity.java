@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @SuperBuilder
@@ -22,8 +24,11 @@ public class BodyEntity {
 
     private String body;
 
-    @Column(name = "timestamp_")
-    private LocalDate timestamp = LocalDate.now();
+    @Column(name = "create_timestamp")
+    private LocalDateTime createTimestamp;
+
+    @Column(name = "update_timestamp")
+    private LocalDateTime updateTimestamp;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

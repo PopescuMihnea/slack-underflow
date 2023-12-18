@@ -28,7 +28,8 @@ public class AnswerMapper extends BodyEntityMapper<Answer, AnswerResponseDto, An
                 .id(answer.getId())
                 .body(answer.getBody())
                 .rank(answer.getRank())
-                .timestamp(answer.getTimestamp())
+                .createTimestamp(answer.getCreateTimestamp())
+                .updateTimestamp(answer.getUpdateTimestamp())
                 .question(answer.getQuestion())
                 .user(userMapper.fromEntityToResponseDto(answer.getUser(), null)).build();
 

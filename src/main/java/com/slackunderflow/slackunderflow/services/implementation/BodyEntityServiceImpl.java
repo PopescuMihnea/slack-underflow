@@ -14,6 +14,8 @@ import com.slackunderflow.slackunderflow.services.BodyEntityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,8 @@ public abstract class BodyEntityServiceImpl<MODEL extends BodyEntity, RESP exten
                         new UserNotFoundError("User not found with username: ", username));
 
         MODEL model = modelMapper.fromRequestToEntity(req, user);
+        model.setCreateTimestamp(LocalDateTime.now());
+        model.setUpdateTimestamp(LocalDateTime.now());
         MODEL savedModel = modelRepository.save(model);
         return modelMapper.fromEntityToResponse(savedModel);
     }
@@ -88,6 +92,7 @@ public abstract class BodyEntityServiceImpl<MODEL extends BodyEntity, RESP exten
         }
 
         model.setBody(req.getBody());
+        model.setUpdateTimestamp(LocalDateTime.now());
 
         MODEL savedModel = modelRepository.save(model);
 

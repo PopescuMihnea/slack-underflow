@@ -24,13 +24,11 @@ public class SuggestionMapper extends BodyEntityMapper<Suggestion, SuggestionRes
     }
 
     public SuggestionResponseDto fromEntityToResponse(Suggestion suggestion) {
-        var userEntity = suggestion.getUser();
-        userEntity.setPassword("hehe :)");
-
         return SuggestionResponseDto.builder()
                 .id(suggestion.getId())
                 .body(suggestion.getBody())
-                .timestamp(suggestion.getTimestamp())
+                .createTimestamp(suggestion.getCreateTimestamp())
+                .updateTimestamp(suggestion.getUpdateTimestamp())
                 .answer(suggestion.getAnswer())
                 .user(userMapper.fromEntityToResponseDto(suggestion.getUser(), null)).build();
     }

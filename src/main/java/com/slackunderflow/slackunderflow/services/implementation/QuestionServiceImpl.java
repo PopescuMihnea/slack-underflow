@@ -17,6 +17,8 @@ import com.slackunderflow.slackunderflow.services.QuestionService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +75,7 @@ public class QuestionServiceImpl
 
         question.setBody(questionRequestDto.getBody());
         question.setTitle(questionRequestDto.getTitle());
+        question.setUpdateTimestamp(LocalDateTime.now());
         question.setTopics(
                 questionRequestDto.
                         getTopics()

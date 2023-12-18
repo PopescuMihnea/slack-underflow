@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +21,9 @@ public class BodyResponse {
     @Schema(description = "The body of this model, contains the text that is showed in the front end")
     private String body;
     @Schema(description = "The date when this model was created")
-    private LocalDate timestamp;
+    private LocalDateTime createTimestamp;
+    @Schema(description = "The date when this model was updated")
+    private LocalDateTime updateTimestamp;
     @Schema(description = "The user that created this model")
     private UserResponseDto user;
 }
