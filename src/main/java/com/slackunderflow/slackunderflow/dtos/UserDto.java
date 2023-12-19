@@ -19,6 +19,8 @@ public class UserDto {
 
     @NotEmpty(message = "You need to enter a username")
     @NotEmpty(message = "You need to enter a username", groups = {RegisteringUser.class})
+    @Size(max = 30, message = "Username is too long")
+    @Size(max = 30, message = "Username is too long", groups = {RegisteringUser.class})
     @Schema(description = "The username of the user you want to login/register")
     private String username;
 

@@ -45,7 +45,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "The user has successfully logged in"),
     })
     @PutMapping("/login")
-    public ResponseEntity<UserResponseDto> login(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserResponseDto> login(@Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The data of the user you want to log in as") @RequestBody UserDto userDto) {
         return new ResponseEntity<>(
                 userEntityService.login(userDto),
                 HttpStatus.OK

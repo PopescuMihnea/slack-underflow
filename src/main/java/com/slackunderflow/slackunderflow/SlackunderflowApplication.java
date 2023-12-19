@@ -34,7 +34,7 @@ public class SlackunderflowApplication {
             UserEntity admin = UserEntity
                     .builder()
                     .id(0L)
-                    .username("caca")
+                    .username("atmin")
                     .password(passwordEncoder.encode("1234"))
                     .authorities(roles)
                     .build();

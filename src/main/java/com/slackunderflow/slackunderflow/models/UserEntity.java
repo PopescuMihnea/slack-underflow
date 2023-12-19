@@ -32,7 +32,7 @@ public class UserEntity implements UserDetails {
 
     private Integer points = 0;
 
-    private BadgeEnum badge = BadgeEnum.SLAVE;
+    private BadgeEnum badge = BadgeEnum.BEGINNER;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -134,7 +134,7 @@ public class UserEntity implements UserDetails {
         private String password;
         private String username;
         private Integer points = 0;
-        private BadgeEnum badge = BadgeEnum.SLAVE;
+        private BadgeEnum badge = BadgeEnum.BEGINNER;
         private Set<Role> authorities = new HashSet<>();
 
         public Builder id(Long id) {

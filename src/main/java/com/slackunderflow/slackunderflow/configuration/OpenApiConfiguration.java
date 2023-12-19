@@ -39,7 +39,7 @@ public class OpenApiConfiguration {
                 .name("ModelNotFoundErrorBody")
                 .title("ModelNotFoundErrorBody")
                 .description("Contains error for model not found")
-                .addProperty("message", new StringSchema().example("Question not found with id: ").description("Data about with field was used to search model"))
+                .addProperty("message", new StringSchema().example("Model not found with id: ").description("Data about with field was used to search model"))
                 .addProperty("body", new StringSchema().example("25")).description("Value of the field that was used to search the model");
 
         var authorizationErrorSchema = new Schema<Map<String, String>>()

@@ -24,7 +24,7 @@ public class UserResponseDto {
     private Integer points = 0;
 
     @Schema(description = "The current badge of the user")
-    private BadgeEnum badge = BadgeEnum.SLAVE;
+    private BadgeEnum badge = BadgeEnum.BEGINNER;
 
     @Schema(description = "The jwt token for this session")
     private String jwt;

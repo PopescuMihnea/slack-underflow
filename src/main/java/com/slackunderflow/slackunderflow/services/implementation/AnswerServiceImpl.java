@@ -216,8 +216,8 @@ public class AnswerServiceImpl
     private BadgeEnum getBadgeFromPoints(Integer points) {
         return switch (Math.min(points, MAX_POINTS) / 25) {
             case 1, 2 -> BadgeEnum.INTERMEDIATE;
-            case 3 -> BadgeEnum.BOSS;
-            default -> BadgeEnum.SLAVE;
+            case 3 -> BadgeEnum.MASTER;
+            default -> BadgeEnum.BEGINNER;
         };
     }
 }
