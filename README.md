@@ -7,34 +7,34 @@ Sample text
 
 Back end package diagram
 
-![alt text](UML%20Diagrams/MihneaPackages.drawio.png)
+![package diagram image](UML%20Diagrams/MihneaPackages.drawio.png)
 
 -----
 
 Back end activity diagram
 
-![alt text](UML%20Diagrams/MihneaActivity.drawio.png)
+![activity diagram image](UML%20Diagrams/MihneaActivity.drawio.png)
 
 -----
 
 Back end class diagram
 
-![alt text](UML%20Diagrams/MocicaClass.drawio.png)
+![class diagram image](UML%20Diagrams/MocicaClass.drawio.png)
 
 -----
 
 Back end interaction diagram
 
-![alt text](UML%20Diagrams/MocicaInteractions.drawio.png)
+![interaction diagram image](UML%20Diagrams/MocicaInteractions.drawio.png)
 
 -----
 
 Front end package diagram
 
-![alt text](UML%20Diagrams/VladPackage.jpeg)
+![package diagram image](UML%20Diagrams/VladPackage.jpeg)
 
 -----
 
 Front end use case diagram
 
-![alt text](UML%20Diagrams/GeorgianaUseCase.jpeg)
+![use case diagram image](UML%20Diagrams/GeorgianaUseCase.jpeg)
