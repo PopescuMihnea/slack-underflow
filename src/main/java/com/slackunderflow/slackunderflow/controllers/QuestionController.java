@@ -90,7 +90,7 @@ public class QuestionController {
     @GetMapping("/get/{id}")
     public ResponseEntity<QuestionResponseDto> getQuestion(@PathVariable
                                                            @Parameter(description = "The id of the question you want to get information for")
-                                                           @Min(0)
+                                                           @Min(1)
                                                            long id) {
         return new ResponseEntity<>(questionService.get(id), HttpStatus.OK);
     }
@@ -105,7 +105,7 @@ public class QuestionController {
     @GetMapping("/get/user/{id}")
     public ResponseEntity<List<QuestionResponseDto>> getQuestionsByUser(@PathVariable
                                                                         @Parameter(description = "The id of the user that the question should have")
-                                                                        @Min(0)
+                                                                        @Min(1)
                                                                         long id) {
         return new ResponseEntity<>(questionService.getAllByUser(id), HttpStatus.OK);
     }
@@ -161,7 +161,7 @@ public class QuestionController {
                                                               QuestionRequestDto questionRequestDto,
                                                               @PathVariable
                                                               @Parameter(description = "The id of the question that is to be modified")
-                                                              @Min(0)
+                                                              @Min(1)
                                                               long id) {
         String name = authentication.getName();
 
@@ -185,7 +185,7 @@ public class QuestionController {
     public ResponseEntity<String> deleteQuestion(Authentication authentication,
                                                  @PathVariable
                                                  @Parameter(description = "The id of the question, belonging to the user, to delete")
-                                                 @Min(0)
+                                                 @Min(1)
                                                  long id) {
         String name = authentication.getName();
 

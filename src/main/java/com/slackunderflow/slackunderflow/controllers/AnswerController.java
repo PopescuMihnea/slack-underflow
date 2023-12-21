@@ -55,7 +55,7 @@ public class AnswerController {
     @GetMapping("/get/{id}")
     public ResponseEntity<AnswerResponseDto> getAnswer(@PathVariable
                                                        @Parameter(description = "The id of the answer to get")
-                                                       @Min(0)
+                                                       @Min(1)
                                                        long id) {
         return new ResponseEntity<>(answerService.get(id), HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class AnswerController {
     @GetMapping("/get/user/{id}")
     public ResponseEntity<List<AnswerResponseDto>> getAnswersByUser(@PathVariable
                                                                     @Parameter(description = "The id of the user which the answers belong to")
-                                                                    @Min(0)
+                                                                    @Min(1)
                                                                     long id) {
         return new ResponseEntity<>(answerService.getAllByUser(id), HttpStatus.OK);
     }
@@ -85,7 +85,7 @@ public class AnswerController {
     @GetMapping("/get/question/{questionId}")
     public ResponseEntity<List<AnswerResponseDto>> getAnswersByQuestion(@PathVariable
                                                                         @Parameter(description = "The id of the question which the answers belong to")
-                                                                        @Min(0)
+                                                                        @Min(1)
                                                                         long questionId) {
         return new ResponseEntity<>(answerService.getAllByQuestion(questionId), HttpStatus.OK);
     }
@@ -134,7 +134,7 @@ public class AnswerController {
     @PatchMapping("/reset/{questionId}")
     public ResponseEntity<List<AnswerResponseDto>> resetRank(@PathVariable
                                                              @Parameter(description = "The id of the question for which to reset all answer ranks to 0")
-                                                             @Min(0)
+                                                             @Min(1)
                                                              long questionId) {
         return new ResponseEntity<>(answerService.resetRanksByQuestion(questionId), HttpStatus.OK);
     }
@@ -155,7 +155,7 @@ public class AnswerController {
                                                           AnswerRequestDto answerRequestDto,
                                                           @PathVariable
                                                           @Parameter(description = "The id of the answer to modify")
-                                                          @Min(0)
+                                                          @Min(1)
                                                           long id) {
         String name = authentication.getName();
 
@@ -173,7 +173,7 @@ public class AnswerController {
     public ResponseEntity<List<AnswerResponseDto>> updateRank(Authentication authentication,
                                                               @PathVariable
                                                               @Parameter(description = "The id of the answer of which to update rank")
-                                                              @Min(0)
+                                                              @Min(1)
                                                               long id,
                                                               @RequestParam
                                                               @Parameter(description = "The new rank of the answer")
@@ -202,7 +202,7 @@ public class AnswerController {
     public ResponseEntity<String> deleteAnswer(Authentication authentication,
                                                @PathVariable
                                                @Parameter(description = "The id of the question that is to be deleted")
-                                               @Min(0)
+                                               @Min(1)
                                                long id) {
         String name = authentication.getName();
 

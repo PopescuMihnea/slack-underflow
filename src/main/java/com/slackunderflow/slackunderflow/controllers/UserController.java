@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable
                                                        @Parameter(description = "Id of the user to get information for",
                                                                example = "1")
-                                                       @Min(0)
+                                                       @Min(1)
                                                        long id) {
         return new ResponseEntity<>(userEntityService.get(id), HttpStatus.OK);
     }

@@ -55,7 +55,7 @@ public class SuggestionController {
     @GetMapping("/get/{id}")
     public ResponseEntity<SuggestionResponseDto> getSuggestion(@PathVariable
                                                                @Parameter(description = "The id of the suggestion to get info for")
-                                                               @Min(0)
+                                                               @Min(1)
                                                                long id) {
         return new ResponseEntity<>(suggestionService.get(id), HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class SuggestionController {
     @GetMapping("/get/user/{id}")
     public ResponseEntity<List<SuggestionResponseDto>> getSuggestionsByUser(@PathVariable
                                                                             @Parameter(description = "The id of the user which all of the suggestions will belong to")
-                                                                            @Min(0)
+                                                                            @Min(1)
                                                                             long id) {
         return new ResponseEntity<>(suggestionService.getAllByUser(id), HttpStatus.OK);
     }
@@ -85,7 +85,7 @@ public class SuggestionController {
     @GetMapping("/get/question/{answerId}")
     public ResponseEntity<List<SuggestionResponseDto>> getSuggestionsByAnswer(@PathVariable
                                                                               @Parameter(description = "The id of the answer that the suggestions should belong to")
-                                                                              @Min(0)
+                                                                              @Min(1)
                                                                               long answerId) {
         return new ResponseEntity<>(suggestionService.getAllByAnswer(answerId), HttpStatus.OK);
     }
@@ -141,7 +141,7 @@ public class SuggestionController {
                                                                   SuggestionRequestDto suggestionRequestDto,
                                                                   @PathVariable
                                                                   @Parameter(description = "The id of the suggestion that is to be modified")
-                                                                  @Min(0)
+                                                                  @Min(1)
                                                                   long id) {
         String name = authentication.getName();
 
@@ -165,7 +165,7 @@ public class SuggestionController {
     public ResponseEntity<String> deleteSuggestion(Authentication authentication,
                                                    @PathVariable
                                                    @Parameter(description = "The id of the suggestion, owned by the logged in user, you want to delete")
-                                                   @Min(0)
+                                                   @Min(1)
                                                    long id) {
         String name = authentication.getName();
 
