@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Schema(description = "Data about an answer that is to be created")
 public class AnswerRequestDto extends BodyRequest {
 
     @Min(value = 0, message = "Invalid question id")

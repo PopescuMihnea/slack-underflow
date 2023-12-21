@@ -21,8 +21,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class ModelAdvice {
     @ExceptionHandler({ModelNotFoundError.class, TopicNotFoundError.class})
-    @ApiResponse(responseCode = "404", description = "Model not found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(ref = "#/components/schemas/ModelNotFoundErrorBody"))})
+    @ApiResponse(responseCode = "404",
+            description = "Model not found",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(ref = "#/components/schemas/ModelNotFoundErrorBody"))})
     public ResponseEntity<Map<String, String>> modelNotFound(ModelNotFoundError error) {
         Map<String, String> map = new HashMap<>();
         map.put("message", error.getMessage());

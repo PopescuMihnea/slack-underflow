@@ -40,15 +40,15 @@ public class OpenApiConfiguration {
                 .title("ModelNotFoundErrorBody")
                 .description("Contains error for model not found")
                 .addProperty("message", new StringSchema().example("Model not found with id: ").description("Data about with field was used to search model"))
-                .addProperty("body", new StringSchema().example("25")).description("Value of the field that was used to search the model");
+                .addProperty("body", new StringSchema().example("25").description("Value of the field that was used to search the model"));
 
         var authorizationErrorSchema = new Schema<Map<String, String>>()
                 .name("AuthorizationErrorBody")
                 .title("AuthorizationErrorBody")
                 .description("Contains user data in case user authorization fails (the user is not found in the database)")
                 .addProperty("username", new StringSchema().example("Mihnea").description("Username of the user that tried to authenticate"))
-                .addProperty("password", new StringSchema().example("")).description("Empty password field")
-                .addProperty("message", new StringSchema().example("User is not found")).description("Message that describes to front end that user doesn't exist");
+                .addProperty("password", new StringSchema().example("").description("Empty password field"))
+                .addProperty("message", new StringSchema().example("User is not found").description("Message that describes to front end that user doesn't exist"));
 
 
         return new OpenAPI()

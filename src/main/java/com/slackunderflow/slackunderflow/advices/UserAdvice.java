@@ -20,8 +20,10 @@ import java.util.Map;
 public class UserAdvice {
 
     @ExceptionHandler(UserNotFoundError.class)
-    @ApiResponse(responseCode = "401", description = "User is not authorized", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(ref = "#/components/schemas/AuthorizationErrorBody"))})
+    @ApiResponse(responseCode = "401",
+            description = "User is not authorized",
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(ref = "#/components/schemas/AuthorizationErrorBody"))})
     public ResponseEntity<Map<String, String>> userNotFound(UserNotFoundError error) {
         Map<String, String> map = new HashMap<>();
         map.put("username", error.getUsername());

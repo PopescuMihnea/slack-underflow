@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @SuperBuilder
+@Schema(description = "Data about an answer")
 public class AnswerResponseDto extends BodyResponse {
 
     @Schema(description = "The rank of this answer between int 1-3, given by the user who made the question")

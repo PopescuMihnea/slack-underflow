@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @SuperBuilder
+@Schema(description = "Data about a question")
 public class QuestionResponseDto extends BodyResponse {
 
     @Schema(description = "The title of the question")

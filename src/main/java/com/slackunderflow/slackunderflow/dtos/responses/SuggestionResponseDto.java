@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @SuperBuilder
+@Schema(description = "Data about a suggestion")
 public class SuggestionResponseDto extends BodyResponse {
     @Schema(description = "The answer that this suggestion is added to")
     private Answer answer;

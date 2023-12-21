@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Data
 @SuperBuilder
+@Schema(description = "Data about a suggestion that is to be created")
 public class SuggestionRequestDto extends BodyRequest {
 
     @Min(value = 0, message = "Invalid answer id")

@@ -12,21 +12,30 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Data
+@Schema(description = "Data about an user for login/register")
 public class UserDto {
 
     public interface RegisteringUser {
     }
 
     @NotEmpty(message = "You need to enter a username")
-    @NotEmpty(message = "You need to enter a username", groups = {RegisteringUser.class})
-    @Size(max = 30, message = "Username is too long")
-    @Size(max = 30, message = "Username is too long", groups = {RegisteringUser.class})
+    @NotEmpty(message = "You need to enter a username",
+            groups = {RegisteringUser.class})
+    @Size(max = 30,
+            message = "Username is too long")
+    @Size(max = 30,
+            message = "Username is too long",
+            groups = {RegisteringUser.class})
     @Schema(description = "The username of the user you want to login/register")
     private String username;
 
     @NotEmpty(message = "You need to enter a password")
-    @Size(min = 5, message = "Password must have at least 5 chr", groups = {RegisteringUser.class})
-    @Size(max = 50, message = "Invalid password", groups = {RegisteringUser.class})
+    @Size(min = 5,
+            message = "Password must have at least 5 chr",
+            groups = {RegisteringUser.class})
+    @Size(max = 50,
+            message = "Invalid password",
+            groups = {RegisteringUser.class})
     @Schema(description = "The password of the user you want to login/register")
     private String password;
 

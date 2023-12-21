@@ -15,10 +15,12 @@ import java.util.Set;
 @NoArgsConstructor
 @SuperBuilder
 @Data
+@Schema(description = "Data about a question that is to be created")
 public class QuestionRequestDto extends BodyRequest {
 
     @NotBlank(message = "Must have a title")
-    @Size(min = 5, message = "Enter a more descriptive(longer) title")
+    @Size(min = 5,
+            message = "Enter a more descriptive(longer) title")
     @Size(max = 100, message = "The title is too long")
     @Schema(description = "The title of the question")
     private String title;
