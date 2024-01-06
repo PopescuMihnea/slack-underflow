@@ -1,5 +1,8 @@
 package com.slackunderflow.slackunderflow.service;
 
+import com.slackunderflow.slackunderflow.advices.ModelAdvice;
+import com.slackunderflow.slackunderflow.advices.UserAdvice;
+import com.slackunderflow.slackunderflow.configuration.TestSecurityConfig;
 import com.slackunderflow.slackunderflow.dtos.UserDto;
 import com.slackunderflow.slackunderflow.dtos.responses.UserResponseDto;
 import com.slackunderflow.slackunderflow.enums.BadgeEnum;
@@ -12,6 +15,7 @@ import com.slackunderflow.slackunderflow.security.TokenService;
 import com.slackunderflow.slackunderflow.services.QuestionService;
 import com.slackunderflow.slackunderflow.services.implementation.UserEntityServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +41,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
+@Import({ModelAdvice.class, UserAdvice.class})
 public class UserServiceTests {
     @Mock
     private UserMapper userMapper;
@@ -62,8 +68,12 @@ public class UserServiceTests {
     private Role role;
     private UserEntity user;
     private UserDto userDto;
+    private UserResponseDto userResponseDto;
     private final String username = "Mihnea";
     private final String password = "12345";
+    private final String token = "JWT here";
+
+    private final Authentication auth = Mockito.mock(Authentication.class);
 
     @BeforeEach
     public void setup() {
@@ -82,6 +92,8 @@ public class UserServiceTests {
                 .username(username)
                 .authorities(roles).build();
 
+        userResponseDto = new UserResponseDto(user.getUsername(), user.getPoints(), user.getBadge(), token);
+
         given(roleRepository.findByAuthority(authority))
                 .willReturn(Optional.of(role));
         given(userMapper.fromDtoToEntity(userDto, roles))
@@ -91,14 +103,8 @@ public class UserServiceTests {
     @DisplayName("JUnit test for register service")
     @Test
     public void givenUserEntityObject_whenRegisterUserEntity_thenReturnUserResponseDto() {
-        var auth = Mockito.mock(Authentication.class);
-
         given(authenticationManager.authenticate(Mockito.any()))
                 .willReturn(auth);
-
-        var token = "JWT here";
-
-        UserResponseDto userResponseDto = new UserResponseDto(user.getUsername(), user.getPoints(), user.getBadge(), token);
 
         given(tokenService.generateJwt(auth)).willReturn(token);
         given(userEntityRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
