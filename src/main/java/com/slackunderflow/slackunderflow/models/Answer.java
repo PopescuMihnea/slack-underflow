@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Answer extends BodyEntity {
     @Column(name = "rank_")
-    private Integer rank = 0;
+    private Integer rank;
 
     @ManyToOne
     @JoinColumn(name = "question_id")

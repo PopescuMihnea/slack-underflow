@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -70,6 +71,21 @@ public class AnswerServiceImpl
         });
 
         return getAll();
+    }
+
+    @Override
+    public AnswerResponseDto create(AnswerRequestDto req, String username) {
+        UserEntity user = userEntityRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new UserNotFoundError("User not found with username: ", username));
+
+        Answer answer = modelMapper.fromRequestToEntity(req, user);
+        answer.setCreateTimestamp(LocalDateTime.now());
+        answer.setUpdateTimestamp(LocalDateTime.now());
+        answer.setRank(0);
+        Answer savedModel = modelRepository.save(answer);
+        return modelMapper.fromEntityToResponse(savedModel);
     }
 
     @Override
