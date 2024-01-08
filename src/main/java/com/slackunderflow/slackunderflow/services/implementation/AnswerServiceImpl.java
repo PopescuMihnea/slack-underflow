@@ -124,16 +124,17 @@ public class AnswerServiceImpl
             } else if (!Objects.equals(answer.getRank(), rank) && answer.getRank() <= MAX_RANK && answer.getRank() >= MIN_RANK && rank <= maxRank) {
                 var otherAnswer = modelRepository.findFirstByRankAndQuestion(rank, question);
 
-
                 if (otherAnswer != null) {
                     if (otherAnswer.getRank() > answer.getRank()) {
                         modifyAnswerRank(otherAnswer, 0);
                     } else {
                         modifyAnswerRank(otherAnswer, answer.getRank());
                     }
+
+                    modelRepository.save(otherAnswer);
                 }
 
-                modelRepository.save(otherAnswer);
+
             }
 
             modifyAnswerRank(answer, rank);
