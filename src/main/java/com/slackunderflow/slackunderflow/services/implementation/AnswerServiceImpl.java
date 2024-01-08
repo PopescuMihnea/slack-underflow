@@ -121,13 +121,16 @@ public class AnswerServiceImpl
                 modifyAnswers.forEach(modifyAnswer -> {
                     modifyAnswerRank(modifyAnswer, modifyAnswer.getRank() + 1);
                 });
-            } else if (!Objects.equals(answer.getRank(), rank) && answer.getRank() <= MAX_RANK && answer.getRank() >= MIN_RANK && rank < maxRank) {
+            } else if (!Objects.equals(answer.getRank(), rank) && answer.getRank() <= MAX_RANK && answer.getRank() >= MIN_RANK && rank <= maxRank) {
                 var otherAnswer = modelRepository.findFirstByRankAndQuestion(rank, question);
 
-                if (otherAnswer.getRank() > answer.getRank()) {
-                    modifyAnswerRank(otherAnswer, 0);
-                } else {
-                    modifyAnswerRank(otherAnswer, answer.getRank());
+
+                if (otherAnswer != null) {
+                    if (otherAnswer.getRank() > answer.getRank()) {
+                        modifyAnswerRank(otherAnswer, 0);
+                    } else {
+                        modifyAnswerRank(otherAnswer, answer.getRank());
+                    }
                 }
 
                 modelRepository.save(otherAnswer);
